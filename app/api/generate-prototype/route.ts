@@ -60,6 +60,9 @@ Implement each screen with a realistic layout and content matching the product's
           message,
           modelConfiguration: { modelId: "v0-pro" },
           responseMode: "async",
+          // Defaults to private (viewable only by the creator's v0 account).
+          // "unlisted" makes the share link work for anyone who has it.
+          chatPrivacy: "unlisted",
         }),
       },
       REQUEST_TIMEOUT_MS
