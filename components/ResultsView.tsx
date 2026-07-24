@@ -86,7 +86,7 @@ export default function ResultsView({
       </button>
 
       {summaryOpen && (
-        <div className="summary-body">
+        <div className="card summary-body">
           <div className="summary-item">
             <span className="field-label">Problem</span>
             <p>{spec.problem}</p>
@@ -121,7 +121,7 @@ export default function ResultsView({
         )}
       </div>
 
-      <div className="out-of-scope-block">
+      <div className="card out-of-scope-block">
         <div className="section-heading">Out of scope</div>
         <div className="pill-group">
           {spec.outOfScope.map((item, i) => (

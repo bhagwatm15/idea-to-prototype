@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
-import { DM_Mono, Space_Grotesk } from "next/font/google";
+import { Carlito, DM_Mono } from "next/font/google";
+import BackgroundTexture from "@/components/BackgroundTexture";
 import "./globals.css";
 
 const dmMono = DM_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
-  weight: ["300", "400", "500"],
+  weight: ["400", "500"],
 });
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-display",
+const carlito = Carlito({
+  variable: "--font-carlito",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
@@ -25,8 +26,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${dmMono.variable} ${spaceGrotesk.variable}`}>
-      <body>{children}</body>
+    <html lang="en" className={`${dmMono.variable} ${carlito.variable}`}>
+      <body>
+        <BackgroundTexture />
+        {children}
+      </body>
     </html>
   );
 }
