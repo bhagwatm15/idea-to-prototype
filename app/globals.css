@@ -248,7 +248,7 @@ select {
 }
 
 .btn-secondary {
-  background: transparent;
+  background: #ffffff;
   border-color: var(--border);
   color: var(--ink-soft);
 }
@@ -256,6 +256,7 @@ select {
 .btn-secondary:hover:not(:disabled) {
   border-color: var(--ink-soft);
   color: var(--ink);
+  background: var(--card-bg-raised);
 }
 
 .btn-ghost {
