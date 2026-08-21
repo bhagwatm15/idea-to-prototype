@@ -8,13 +8,22 @@ interface ResultsViewProps {
   prototypeLoading: boolean;
   prototypeFiles: PrototypeFile[];
   prototypeWebUrl: string | null;
+  prototypeOpenRequiresLogin: boolean;
   prototypeFailed: boolean;
   prototypeVersion: number;
   onRetryPrototype: () => void;
   onStartOver: () => void;
 }
 
-function CodeViewer({ files, webUrl }: { files: PrototypeFile[]; webUrl: string | null }) {
+function CodeViewer({
+  files,
+  webUrl,
+  openRequiresLogin,
+}: {
+  files: PrototypeFile[];
+  webUrl: string | null;
+  openRequiresLogin: boolean;
+}) {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const active = files[activeIndex] ?? files[0];
@@ -24,7 +33,9 @@ function CodeViewer({ files, webUrl }: { files: PrototypeFile[]; webUrl: string 
       {webUrl && (
         <div className="prototype-cta">
           <p className="prototype-cta-copy">
-            Your prototype is live and clickable — open it in v0 to try it for real.
+            {openRequiresLogin
+              ? "Your prototype is live and clickable — open it in v0 to try it for real. This opens v0's editor, which requires a free v0 sign-in to view."
+              : "Your prototype is live and clickable — open it to try it for real."}
           </p>
           <a href={webUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
             Open live prototype ↗
@@ -58,6 +69,7 @@ export default function ResultsView({
   prototypeLoading,
   prototypeFiles,
   prototypeWebUrl,
+  prototypeOpenRequiresLogin,
   prototypeFailed,
   prototypeVersion,
   onRetryPrototype,
@@ -110,7 +122,12 @@ export default function ResultsView({
             <p className="loading-copy">Building your prototype... this can take a little longer</p>
           </div>
         ) : prototypeFiles.length > 0 ? (
-          <CodeViewer key={prototypeVersion} files={prototypeFiles} webUrl={prototypeWebUrl} />
+          <CodeViewer
+            key={prototypeVersion}
+            files={prototypeFiles}
+            webUrl={prototypeWebUrl}
+            openRequiresLogin={prototypeOpenRequiresLogin}
+          />
         ) : (
           <div className="prototype-fallback">
             <p>{prototypeFailed ? "Prototype generation failed." : "No prototype generated."}</p>

@@ -39,6 +39,9 @@ export interface PrototypeFile {
 export interface PrototypeResult {
   files: PrototypeFile[];
   webUrl: string | null;
+  // True when webUrl points at v0's chat/editor page rather than the public
+  // demo preview, meaning the viewer needs to be signed into v0 to open it.
+  openRequiresLogin?: boolean;
   error?: string;
   raw?: unknown;
 }

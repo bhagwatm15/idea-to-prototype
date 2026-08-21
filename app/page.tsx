@@ -16,6 +16,7 @@ export default function Home() {
   const [regenerateCount, setRegenerateCount] = useState(0);
   const [prototypeFiles, setPrototypeFiles] = useState<PrototypeFile[]>([]);
   const [prototypeWebUrl, setPrototypeWebUrl] = useState<string | null>(null);
+  const [prototypeOpenRequiresLogin, setPrototypeOpenRequiresLogin] = useState(false);
   const [prototypeFailed, setPrototypeFailed] = useState(false);
   const [prototypeLoading, setPrototypeLoading] = useState(false);
   const [prototypeVersion, setPrototypeVersion] = useState(0);
@@ -81,10 +82,12 @@ export default function Home() {
       const data: PrototypeResult = await res.json();
       setPrototypeFiles(data.files);
       setPrototypeWebUrl(data.webUrl);
+      setPrototypeOpenRequiresLogin(Boolean(data.openRequiresLogin));
       setPrototypeFailed(data.files.length === 0);
     } catch {
       setPrototypeFiles([]);
       setPrototypeWebUrl(null);
+      setPrototypeOpenRequiresLogin(false);
       setPrototypeFailed(true);
     } finally {
       setPrototypeLoading(false);
@@ -112,6 +115,7 @@ export default function Home() {
     setRegenerateCount(0);
     setPrototypeFiles([]);
     setPrototypeWebUrl(null);
+    setPrototypeOpenRequiresLogin(false);
     setPrototypeFailed(false);
     setPrototypeLoading(false);
   }
@@ -143,6 +147,7 @@ export default function Home() {
         prototypeLoading={stage === "generating-prototype" || prototypeLoading}
         prototypeFiles={prototypeFiles}
         prototypeWebUrl={prototypeWebUrl}
+        prototypeOpenRequiresLogin={prototypeOpenRequiresLogin}
         prototypeVersion={prototypeVersion}
         prototypeFailed={prototypeFailed}
         onRetryPrototype={handleRetryPrototype}
