@@ -5,7 +5,7 @@ import IdeaForm from "@/components/IdeaForm";
 import LoadingStage from "@/components/LoadingStage";
 import SpecReview from "@/components/SpecReview";
 import ResultsView from "@/components/ResultsView";
-import type { IdeaInput, PrototypeFile, PrototypeResult, Spec, Stage } from "@/lib/types";
+import type { IdeaInput, PrototypeResult, Spec, Stage } from "@/lib/types";
 
 export default function Home() {
   const [stage, setStage] = useState<Stage>("input");
@@ -14,9 +14,7 @@ export default function Home() {
   const [specError, setSpecError] = useState<string | null>(null);
   const [regenerating, setRegenerating] = useState(false);
   const [regenerateCount, setRegenerateCount] = useState(0);
-  const [prototypeFiles, setPrototypeFiles] = useState<PrototypeFile[]>([]);
-  const [prototypeWebUrl, setPrototypeWebUrl] = useState<string | null>(null);
-  const [prototypeOpenRequiresLogin, setPrototypeOpenRequiresLogin] = useState(false);
+  const [prototypeCode, setPrototypeCode] = useState<string | null>(null);
   const [prototypeFailed, setPrototypeFailed] = useState(false);
   const [prototypeLoading, setPrototypeLoading] = useState(false);
   const [prototypeVersion, setPrototypeVersion] = useState(0);
@@ -80,14 +78,10 @@ export default function Home() {
         }),
       });
       const data: PrototypeResult = await res.json();
-      setPrototypeFiles(data.files);
-      setPrototypeWebUrl(data.webUrl);
-      setPrototypeOpenRequiresLogin(Boolean(data.openRequiresLogin));
-      setPrototypeFailed(data.files.length === 0);
+      setPrototypeCode(data.code);
+      setPrototypeFailed(!data.code);
     } catch {
-      setPrototypeFiles([]);
-      setPrototypeWebUrl(null);
-      setPrototypeOpenRequiresLogin(false);
+      setPrototypeCode(null);
       setPrototypeFailed(true);
     } finally {
       setPrototypeLoading(false);
@@ -113,9 +107,7 @@ export default function Home() {
     setSpecError(null);
     setRegenerating(false);
     setRegenerateCount(0);
-    setPrototypeFiles([]);
-    setPrototypeWebUrl(null);
-    setPrototypeOpenRequiresLogin(false);
+    setPrototypeCode(null);
     setPrototypeFailed(false);
     setPrototypeLoading(false);
   }
@@ -145,9 +137,7 @@ export default function Home() {
       <ResultsView
         spec={spec}
         prototypeLoading={stage === "generating-prototype" || prototypeLoading}
-        prototypeFiles={prototypeFiles}
-        prototypeWebUrl={prototypeWebUrl}
-        prototypeOpenRequiresLogin={prototypeOpenRequiresLogin}
+        prototypeCode={prototypeCode}
         prototypeVersion={prototypeVersion}
         prototypeFailed={prototypeFailed}
         onRetryPrototype={handleRetryPrototype}
