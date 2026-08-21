@@ -99,19 +99,28 @@ Implement each screen with a realistic layout and content matching the product's
       latest = await pollRes.json();
     }
 
-    // The live demoUrl sandbox (vusercontent.net) has proven unreliable for
-    // API-created chats — reproducibly fails to resolve the tailwindcss import
-    // regardless of model. Falling back to the generated files themselves plus
-    // a link to open the chat on v0.app, rather than an iframe that's likely broken.
+    // v0-generated files have previously proven unreliable to embed directly
+    // (a prior attempt to run them in an iframe/WebContainer hit build and
+    // sandbox issues), so we show the generated files themselves plus a link
+    // out to view the live version.
     const rawFiles = Array.isArray(latest?.latestVersion?.files) ? latest.latestVersion.files : [];
     const files: PrototypeFile[] = rawFiles
       .filter((f: unknown): f is { name: unknown; content: unknown } => typeof f === "object" && f !== null)
       .filter((f: { name: unknown; content: unknown }) => typeof f.name === "string" && typeof f.content === "string")
       .map((f: { name: unknown; content: unknown }) => ({ name: f.name as string, content: f.content as string }));
 
-    const webUrl: string | null = typeof latest?.webUrl === "string" ? latest.webUrl : null;
+    // latestVersion.demoUrl is the public, no-login preview (vusercontent.net).
+    // latest.webUrl is the v0.app chat/editor page, which requires the viewer
+    // to be signed into v0 even when the chat itself is unlisted. Prefer the
+    // demo link so "Open live prototype" doesn't hit a login wall; only fall
+    // back to the editor link (and flag it) if no demo was produced.
+    const demoUrl: string | null =
+      typeof latest?.latestVersion?.demoUrl === "string" ? latest.latestVersion.demoUrl : null;
+    const chatWebUrl: string | null = typeof latest?.webUrl === "string" ? latest.webUrl : null;
+    const webUrl = demoUrl ?? chatWebUrl;
+    const openRequiresLogin = webUrl !== null && webUrl === chatWebUrl;
 
-    const payload: PrototypeResult = { files, webUrl, raw: latest };
+    const payload: PrototypeResult = { files, webUrl, openRequiresLogin, raw: latest };
     if (files.length === 0) {
       payload.error = "prototype_failed";
     }
