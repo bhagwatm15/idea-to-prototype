@@ -25,7 +25,7 @@ export default function PrototypePreview({ code }: PrototypePreviewProps) {
         />
       </SandpackLayout>
 
-      <button type="button" className="summary-toggle" onClick={() => setCodeOpen((v) => !v)}>
+      <button type="button" className="btn btn-secondary toggle-btn" onClick={() => setCodeOpen((v) => !v)}>
         {codeOpen ? "Hide code" : "Show code"}
       </button>
 

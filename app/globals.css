@@ -411,20 +411,8 @@ select {
   text-decoration: underline;
 }
 
-.summary-toggle {
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 13px;
-  padding: 0;
+.toggle-btn {
   margin-top: 12px;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  font-family: var(--font-body);
-}
-
-.summary-toggle:hover {
-  color: #ffffff;
 }
 
 .summary-body {

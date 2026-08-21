@@ -41,7 +41,7 @@ export default function ResultsView({
 
       <h1 className="title">{spec.productName}</h1>
 
-      <button type="button" className="summary-toggle" onClick={() => setSummaryOpen((v) => !v)}>
+      <button type="button" className="btn btn-secondary toggle-btn" onClick={() => setSummaryOpen((v) => !v)}>
         {summaryOpen ? "Hide spec summary" : "Show spec summary"}
       </button>
 
