@@ -33,7 +33,9 @@ ${flowText}
 Screens:
 ${screensText}
 
-Write a single, self-contained React functional component named App, as the default export, in one file. Use useState to switch between the screens listed above, with a simple nav or tab bar to move between them. Use inline styles only — no external CSS, no Tailwind, no component libraries. Do not make any auth or backend calls. Give each screen realistic, specific placeholder content that fits the product's purpose (real-sounding names, numbers, labels) — never generic lorem ipsum text. Choose colors and typography (via inline styles) that fit the brand tone above.
+Write a single, self-contained React functional component named App, as the default export, in one file. Use useState to switch between the screens listed above, with a simple nav or tab bar to move between them. Use inline styles only — no external CSS, no Tailwind, no component libraries. Do not make any auth or backend calls. Give each screen realistic, specific placeholder content that fits the product's purpose (real-sounding names, numbers, labels) — never generic lorem ipsum text, but keep sample data lists short (3-5 items is plenty). Choose colors and typography (via inline styles) that fit the brand tone above.
+
+Keep the whole thing lean and focused on layout and navigation: no animations, no decorative effects (e.g. confetti), and no extra helper components beyond what's needed to render the screens. This needs to fit in a limited response length, so favor a smaller, complete component over a larger, more elaborate one.
 
 Return ONLY the code for this component — no markdown fences, no commentary, no leading or trailing text.`;
 
@@ -41,9 +43,12 @@ Return ONLY the code for this component — no markdown fences, no commentary, n
   try {
     const message = await client.messages.create({
       model: "claude-sonnet-4-6",
-      max_tokens: 8192,
+      max_tokens: 4096,
       messages: [{ role: "user", content: prompt }],
     });
+    if (message.stop_reason === "max_tokens") {
+      console.error("generate-prototype: response truncated at max_tokens");
+    }
     const block = message.content[0];
     rawText = block && block.type === "text" ? block.text : "";
   } catch (error) {
