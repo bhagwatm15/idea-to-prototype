@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { parse } from "@babel/parser";
 import { NextResponse } from "next/server";
 import type { PrototypeResult, Screen } from "@/lib/types";
 
@@ -64,6 +65,20 @@ Return ONLY the code for this component — no markdown fences, no commentary, n
     const payload: PrototypeResult = {
       code: null,
       error: "The prototype generator returned output that wasn't a valid component.",
+    };
+    return NextResponse.json(payload, { status: 502 });
+  }
+
+  // A substring check can't catch a response that's truncated or malformed
+  // partway through — actually parse it so we never hand Sandpack code that
+  // fails at runtime with a raw syntax error.
+  try {
+    parse(code, { sourceType: "module", plugins: ["jsx"] });
+  } catch (error) {
+    console.error("generate-prototype: model output failed to parse:", error, code);
+    const payload: PrototypeResult = {
+      code: null,
+      error: "The prototype generator returned output that wasn't valid JavaScript.",
     };
     return NextResponse.json(payload, { status: 502 });
   }
