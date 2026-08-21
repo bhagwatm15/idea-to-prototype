@@ -1,75 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import type { PrototypeFile, Spec } from "@/lib/types";
+import PrototypePreview from "@/components/PrototypePreview";
+import type { Spec } from "@/lib/types";
 
 interface ResultsViewProps {
   spec: Spec;
   prototypeLoading: boolean;
-  prototypeFiles: PrototypeFile[];
-  prototypeWebUrl: string | null;
-  prototypeOpenRequiresLogin: boolean;
+  prototypeCode: string | null;
   prototypeFailed: boolean;
   prototypeVersion: number;
   onRetryPrototype: () => void;
   onStartOver: () => void;
 }
 
-function CodeViewer({
-  files,
-  webUrl,
-  openRequiresLogin,
-}: {
-  files: PrototypeFile[];
-  webUrl: string | null;
-  openRequiresLogin: boolean;
-}) {
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  const active = files[activeIndex] ?? files[0];
-
-  return (
-    <div>
-      {webUrl && (
-        <div className="prototype-cta">
-          <p className="prototype-cta-copy">
-            {openRequiresLogin
-              ? "Your prototype is live and clickable — open it in v0 to try it for real. This opens v0's editor, which requires a free v0 sign-in to view."
-              : "Your prototype is live and clickable — open it to try it for real."}
-          </p>
-          <a href={webUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
-            Open live prototype ↗
-          </a>
-        </div>
-      )}
-      <div className="code-section-label">Generated code</div>
-      <div className="code-viewer">
-        <div className="code-tabs">
-          {files.map((file, i) => (
-            <button
-              key={file.name}
-              type="button"
-              className={i === activeIndex ? "code-tab code-tab-active" : "code-tab"}
-              onClick={() => setActiveIndex(i)}
-            >
-              {file.name}
-            </button>
-          ))}
-        </div>
-        <pre className="code-block">
-          <code>{active?.content}</code>
-        </pre>
-      </div>
-    </div>
-  );
-}
-
 export default function ResultsView({
   spec,
   prototypeLoading,
-  prototypeFiles,
-  prototypeWebUrl,
-  prototypeOpenRequiresLogin,
+  prototypeCode,
   prototypeFailed,
   prototypeVersion,
   onRetryPrototype,
@@ -121,13 +69,8 @@ export default function ResultsView({
             <div className="spinner" />
             <p className="loading-copy">Building your prototype... this can take a little longer</p>
           </div>
-        ) : prototypeFiles.length > 0 ? (
-          <CodeViewer
-            key={prototypeVersion}
-            files={prototypeFiles}
-            webUrl={prototypeWebUrl}
-            openRequiresLogin={prototypeOpenRequiresLogin}
-          />
+        ) : prototypeCode ? (
+          <PrototypePreview key={prototypeVersion} code={prototypeCode} />
         ) : (
           <div className="prototype-fallback">
             <p>{prototypeFailed ? "Prototype generation failed." : "No prototype generated."}</p>
