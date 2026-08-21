@@ -36,7 +36,11 @@ ${screensText}
 
 Write a single, self-contained React functional component named App, as the default export, in one file. Use useState to switch between the screens listed above, with a simple nav or tab bar to move between them. Use inline styles only — no external CSS, no Tailwind, no component libraries. Do not make any auth or backend calls. Give each screen realistic, specific placeholder content that fits the product's purpose (real-sounding names, numbers, labels) — never generic lorem ipsum text, but keep sample data lists short (3-5 items is plenty). Choose colors and typography (via inline styles) that fit the brand tone above.
 
-Keep the whole thing lean and focused on layout and navigation: no animations, no decorative effects (e.g. confetti), and no extra helper components beyond what's needed to render the screens. This needs to fit in a limited response length, so favor a smaller, complete component over a larger, more elaborate one.
+This has a hard length budget, so structure it to stay compact:
+- Do not define separate named sub-components (no NavBar, no Card, no per-item helper functions) — write everything directly inside App's body, with an if/else or switch on the current screen.
+- Define shared style objects (colors, spacing, a couple of reusable style constants) once near the top and reuse them, rather than repeating inline style objects.
+- No animations, transitions, or decorative effects (e.g. confetti, spinners).
+- Aim for roughly 120-180 lines total. A smaller, fully complete component is much better than a larger, cut-off one.
 
 Return ONLY the code for this component — no markdown fences, no commentary, no leading or trailing text.`;
 
@@ -44,7 +48,7 @@ Return ONLY the code for this component — no markdown fences, no commentary, n
   try {
     const message = await client.messages.create({
       model: "claude-sonnet-4-6",
-      max_tokens: 4096,
+      max_tokens: 8192,
       messages: [{ role: "user", content: prompt }],
     });
     if (message.stop_reason === "max_tokens") {
