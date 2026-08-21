@@ -109,15 +109,18 @@ Implement each screen with a realistic layout and content matching the product's
       .filter((f: { name: unknown; content: unknown }) => typeof f.name === "string" && typeof f.content === "string")
       .map((f: { name: unknown; content: unknown }) => ({ name: f.name as string, content: f.content as string }));
 
-    // latestVersion.demoUrl is the public, no-login preview (vusercontent.net).
-    // latest.webUrl is the v0.app chat/editor page, which requires the viewer
-    // to be signed into v0 even when the chat itself is unlisted. Prefer the
-    // demo link so "Open live prototype" doesn't hit a login wall; only fall
-    // back to the editor link (and flag it) if no demo was produced.
+    // latestVersion.demoUrl is the public, no-login preview (vusercontent.net),
+    // but it's currently unreliable for chats created via the Platform API —
+    // v0's sandbox reproducibly fails to resolve imports (tailwindcss, etc.)
+    // for these chats since a Feb 2026 sandbox update (confirmed as a known,
+    // open v0 issue, not something on our end). latest.webUrl is the v0.app
+    // chat/editor page, which always renders correctly but requires the
+    // viewer to be signed into v0. Prefer the reliable editor link until v0
+    // fixes the demo sandbox for API-created chats.
     const demoUrl: string | null =
       typeof latest?.latestVersion?.demoUrl === "string" ? latest.latestVersion.demoUrl : null;
     const chatWebUrl: string | null = typeof latest?.webUrl === "string" ? latest.webUrl : null;
-    const webUrl = demoUrl ?? chatWebUrl;
+    const webUrl = chatWebUrl ?? demoUrl;
     const openRequiresLogin = webUrl !== null && webUrl === chatWebUrl;
 
     const payload: PrototypeResult = { files, webUrl, openRequiresLogin, raw: latest };
