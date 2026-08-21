@@ -446,6 +446,12 @@ select {
   margin-top: 32px;
 }
 
+.prototype-code-card {
+  margin-top: 12px;
+  overflow: hidden;
+  padding: 0;
+}
+
 .panel-title {
   font-size: 12px;
   text-transform: uppercase;
