@@ -9,14 +9,16 @@
  *   npm run compare-models -- --step all                                           # full run
  *   npm run compare-models -- --step all --retry-errors                            # re-run only failed or missing runs
  *   npm run compare-models -- --step report                                        # rebuild runs.csv + review.html from runs.json
+ *   npm run compare-models -- --step serve                                         # open review.html at http://localhost:4173
  *
- * Steps: spec | code | all | report. `code` reads the specs recorded by a
+ * Steps: spec | code | all | report | serve. `code` reads the specs recorded by a
  * previous `spec` run in the same --out directory.
  */
 import Anthropic from "@anthropic-ai/sdk";
 import { transform } from "esbuild";
 import { randomInt } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { createServer } from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
@@ -724,6 +726,26 @@ createRoot(document.getElementById("root")).render(h(App));
 </html>
 `;
 
+/**
+ * Sandpack's preview iframe can't connect when the page is opened from a
+ * file:// URL, so serve review.html over http. Only the page is served; the
+ * key file and outputs stay off the server.
+ */
+function serveReviewPage(outDir: string, port: number) {
+  const page = path.join(outDir, "review.html");
+  if (!existsSync(page)) throw new Error(`${page} doesn't exist yet; run the code step first.`);
+  createServer((req, res) => {
+    if (req.url !== "/" && req.url !== "/review.html") {
+      res.writeHead(404).end();
+      return;
+    }
+    res.writeHead(200, { "content-type": "text/html; charset=utf-8" });
+    res.end(readFileSync(page));
+  }).listen(port, "127.0.0.1", () => {
+    console.log(`Blind review page: http://localhost:${port}/  (Ctrl+C to stop)`);
+  });
+}
+
 // ---------------------------------------------------------------------------
 // CLI
 // ---------------------------------------------------------------------------
@@ -736,11 +758,12 @@ async function main() {
       runs: { type: "string", default: String(CONFIG.runsPerModel) },
       out: { type: "string", default: "results" },
       "retry-errors": { type: "boolean", default: false },
+      port: { type: "string", default: "4173" },
     },
   });
   const step = values.step!;
-  if (!["spec", "code", "all", "report"].includes(step)) {
-    throw new Error(`--step must be spec, code, all, or report (got ${step})`);
+  if (!["spec", "code", "all", "report", "serve"].includes(step)) {
+    throw new Error(`--step must be spec, code, all, report, or serve (got ${step})`);
   }
   const ideaIds = values.ideas ? values.ideas.split(",").map(Number) : IDEAS.map((_, i) => i + 1);
   if (ideaIds.some((id) => !Number.isInteger(id) || id < 1 || id > IDEAS.length)) {
@@ -749,6 +772,11 @@ async function main() {
   const runs = Number(values.runs);
   const outDir = path.resolve(ROOT, values.out!);
   mkdirSync(outDir, { recursive: true });
+
+  if (step === "serve") {
+    serveReviewPage(outDir, Number(values.port));
+    return;
+  }
 
   const keyProblem = step === "report" ? null : missingKeyMessage();
   if (keyProblem) {
