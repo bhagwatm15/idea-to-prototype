@@ -1,0 +1,46 @@
+{
+  "productName": "Threadline",
+  "oneLiner": "A dashboard that instantly re-orients PMs when they switch projects, surfacing the last decision made, open blockers, and who's waiting on what.",
+  "problem": "PMs juggling multiple projects lose critical context every time they switch, forcing them to re-read Slack threads and docs just to remember where things stood. This context-switching tax leads to dropped commitments, repeated questions, and stalled decisions because no one can quickly answer 'what happened last, what's blocking us, and who's waiting on me?'",
+  "targetUser": "Product managers responsible for 3 or more concurrent projects or teams",
+  "tone": "clean, calm, focused, professional",
+  "platform": "web",
+  "coreFlow": [
+    "PM logs in and sees a prioritized list of all active projects with last-touched timestamps",
+    "PM selects a project to re-enter after time away",
+    "Dashboard surfaces the last decision made, with context and date",
+    "Dashboard shows current blockers and their owners",
+    "Dashboard lists who is waiting on the PM and who the PM is waiting on",
+    "PM adds a quick note, resolves a blocker, or nudges a stakeholder",
+    "PM switches to the next project with full context retained"
+  ],
+  "screens": [
+    {
+      "name": "Project Switcher",
+      "purpose": "Show all projects at a glance, ranked by recency and urgency, so PMs know where to focus first"
+    },
+    {
+      "name": "Project Context View",
+      "purpose": "Give a single-screen recap of the last decision, active blockers, and waiting-on relationships for one project"
+    },
+    {
+      "name": "Decision Log",
+      "purpose": "Provide a chronological history of key decisions so PMs and stakeholders can trace how a project got here"
+    },
+    {
+      "name": "Blocker Detail",
+      "purpose": "Let PMs view, update, or resolve a specific blocker and reassign ownership"
+    },
+    {
+      "name": "Daily Digest",
+      "purpose": "Summarize what's waiting across all projects so PMs can plan their day before diving in"
+    }
+  ],
+  "outOfScope": [
+    "Full task and project management (replacing tools like Jira or Asana)",
+    "Team chat or messaging functionality",
+    "Time tracking and reporting",
+    "Roadmapping and prioritization frameworks",
+    "Native mobile app in v1"
+  ]
+}

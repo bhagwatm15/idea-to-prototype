@@ -1,0 +1,44 @@
+{
+  "productName": "DecisionLog",
+  "oneLiner": "A decision log that tracks what was decided, why, and when.",
+  "problem": "Teams and individuals frequently lose context around decisions made—why they were chosen, who approved them, and when. This leads to repeated debates, inconsistent choices, and wasted time re-explaining rationale.",
+  "targetUser": "Product managers, engineering leads, and project coordinators who need to maintain institutional memory of decisions across their teams.",
+  "tone": "Clear, professional, methodical",
+  "platform": "web",
+  "coreFlow": [
+    "User creates a new decision entry with title and context",
+    "User documents the decision rationale and key factors considered",
+    "User logs the decision date and stakeholders involved",
+    "User can view all decisions in a chronological or searchable log",
+    "User can reference past decisions to understand historical context"
+  ],
+  "screens": [
+    {
+      "name": "Decision List",
+      "purpose": "Display all logged decisions chronologically with filters by date, status, or topic for quick reference"
+    },
+    {
+      "name": "Create Decision",
+      "purpose": "Form to capture decision title, rationale, alternatives considered, stakeholders, and decision date"
+    },
+    {
+      "name": "Decision Detail",
+      "purpose": "Full view of a single decision showing all context, outcomes, and related decisions"
+    },
+    {
+      "name": "Search & Filter",
+      "purpose": "Allow users to find decisions by keyword, date range, or decision owner"
+    },
+    {
+      "name": "Dashboard",
+      "purpose": "High-level overview showing recent decisions, decision trends, and quick stats"
+    }
+  ],
+  "outOfScope": [
+    "Real-time collaboration or live editing",
+    "Integration with external tools (Slack, Jira, etc.)",
+    "AI-powered decision suggestions or analysis",
+    "Permission management and role-based access control",
+    "Mobile app"
+  ]
+}

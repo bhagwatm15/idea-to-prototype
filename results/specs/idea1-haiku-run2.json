@@ -1,0 +1,44 @@
+{
+  "productName": "ContextSwitch",
+  "oneLiner": "A dashboard that helps PMs re-orient when switching between projects, showing the last decision made, blockers, and who's waiting on what.",
+  "problem": "Product managers lose critical context when juggling multiple projects, leading to repeated questions, missed blockers, and stalled dependencies. Switching between projects requires digging through emails, Slack, and project tools to get oriented.",
+  "targetUser": "Product managers managing 2-5 concurrent projects",
+  "tone": "clear, focused, efficient",
+  "platform": "web",
+  "coreFlow": [
+    "User logs in and views dashboard with all active projects",
+    "User selects a project to view its context snapshot",
+    "User reviews last key decision, current blockers, and pending dependencies",
+    "User marks items as resolved or adds quick updates",
+    "User can set 'context refresh reminders' before switching projects"
+  ],
+  "screens": [
+    {
+      "name": "Dashboard Home",
+      "purpose": "Display all active projects with a quick-glance status card showing last decision, blocker count, and waiting-on count"
+    },
+    {
+      "name": "Project Context View",
+      "purpose": "Deep dive into a single project showing timeline of last 3 decisions, active blockers with owners, and dependencies blocked on this project"
+    },
+    {
+      "name": "Blockers & Dependencies",
+      "purpose": "Focused view of what's blocking progress and what's waiting on this PM, with action buttons to resolve or escalate"
+    },
+    {
+      "name": "Decision Timeline",
+      "purpose": "Chronological view of recent decisions with context, stakeholders involved, and any follow-up actions"
+    },
+    {
+      "name": "Settings & Integrations",
+      "purpose": "Connect to Jira, Linear, Slack, or email to auto-populate blockers and decisions"
+    }
+  ],
+  "outOfScope": [
+    "Project creation or full project management functionality",
+    "Real-time collaboration or commenting",
+    "Advanced analytics or reporting",
+    "Mobile app (web-only for initial launch)",
+    "Integration with more than 5 tools"
+  ]
+}

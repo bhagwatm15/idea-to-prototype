@@ -1,0 +1,40 @@
+{
+  "productName": "ContextSwitch",
+  "oneLiner": "A dashboard that helps PMs re-orient when switching between projects, showing the last decision made, blockers, and who's waiting on what.",
+  "problem": "Product managers juggle multiple projects simultaneously, losing critical context when switching between them. This context loss leads to duplicated work, missed blockers, delayed decisions, and team frustration from unclear ownership and status.",
+  "targetUser": "Product managers who own 2+ concurrent projects and need to stay aligned with their teams",
+  "tone": "clear, efficient, grounded",
+  "platform": "web",
+  "coreFlow": [
+    "User logs in and views all their projects in a prioritized list",
+    "User selects a project to view its re-orientation dashboard",
+    "Dashboard displays the most recent decision, current blockers, and pending dependencies",
+    "User sees who is waiting on their input and what action items need attention",
+    "User can quick-add updates or mark blockers as resolved to keep context fresh"
+  ],
+  "screens": [
+    {
+      "name": "Project Roster",
+      "purpose": "Shows all projects the PM owns with last activity timestamp and unresolved blocker count to guide which project needs attention first"
+    },
+    {
+      "name": "Re-orientation Dashboard",
+      "purpose": "Displays the last decision made, active blockers with owners, dependencies waiting on this PM, and team members waiting for input"
+    },
+    {
+      "name": "Decision Timeline",
+      "purpose": "Chronological view of recent project decisions with context and participants to quickly recall what was decided and why"
+    },
+    {
+      "name": "Blocker Detail",
+      "purpose": "Deep view of a single blocker showing who owns it, impact on timeline, and conversation history for fast resolution"
+    }
+  ],
+  "outOfScope": [
+    "Project planning or roadmap management tools",
+    "Time tracking or resource allocation",
+    "Meeting scheduling or calendar integration",
+    "Team communication or messaging (integrates with existing tools instead)",
+    "Analytics or metrics reporting"
+  ]
+}

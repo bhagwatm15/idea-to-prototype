@@ -1,0 +1,44 @@
+{
+  "productName": "TwoTakes",
+  "oneLiner": "Turns messy status bullets into two polished updates—one for execs, one for the team.",
+  "problem": "People writing status updates either send the same raw, jargon-heavy bullets to everyone or waste time manually rewriting the same update twice for different audiences with different needs for detail and tone.",
+  "targetUser": "Project managers, team leads, and individual contributors who regularly report progress to both leadership and their immediate team.",
+  "tone": "professional, crisp, trustworthy",
+  "platform": "web",
+  "coreFlow": [
+    "User pastes or types rough status bullets into a single input box",
+    "User optionally adds context (project name, audience notes, key highlights)",
+    "Tool generates two versions: a concise exec summary and a detailed team update",
+    "User reviews both versions side-by-side and edits inline as needed",
+    "User copies, exports, or downloads the finalized versions"
+  ],
+  "screens": [
+    {
+      "name": "Input",
+      "purpose": "Capture rough bullets and optional context before generation"
+    },
+    {
+      "name": "Generating",
+      "purpose": "Show progress while the two versions are being created"
+    },
+    {
+      "name": "Dual Editor",
+      "purpose": "Display exec and team versions side-by-side for review and editing"
+    },
+    {
+      "name": "History",
+      "purpose": "Browse and reuse past status updates"
+    },
+    {
+      "name": "Settings",
+      "purpose": "Adjust default tone, length, and export preferences"
+    }
+  ],
+  "outOfScope": [
+    "Real-time multi-user collaborative editing",
+    "Direct send integrations with Slack, email, or Teams",
+    "Automated data pulls from Jira, Asana, or other PM tools",
+    "Native mobile app",
+    "Recurring update scheduling and reminders"
+  ]
+}

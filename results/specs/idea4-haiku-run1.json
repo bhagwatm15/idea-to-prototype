@@ -1,0 +1,44 @@
+{
+  "productName": "FridgePlan",
+  "oneLiner": "An app that plans a week of meals around what's already in the fridge.",
+  "problem": "People waste food and money by not knowing what to cook with ingredients they already have, leading to last-minute takeout orders and expired groceries.",
+  "targetUser": "Busy home cooks aged 25-45 who want to reduce food waste, save money, and simplify meal planning.",
+  "tone": "practical, encouraging, efficient",
+  "platform": "web",
+  "coreFlow": [
+    "User inventories current fridge items (manually or via photo upload)",
+    "User specifies dietary preferences, servings, and cuisine preferences",
+    "App generates a customized 7-day meal plan using available ingredients",
+    "User reviews plan, adjusts meals, and gets a shopping list for missing items",
+    "User accesses recipes and cooking instructions throughout the week"
+  ],
+  "screens": [
+    {
+      "name": "Ingredient Inventory",
+      "purpose": "Allow users to input, photograph, or import their current fridge contents with quantities and expiration dates"
+    },
+    {
+      "name": "Preferences Setup",
+      "purpose": "Capture dietary restrictions, cuisine preferences, servings, and cooking skill level"
+    },
+    {
+      "name": "Weekly Meal Plan",
+      "purpose": "Display the AI-generated 7-day meal plan with visual cards, ingredient usage, and ability to swap meals"
+    },
+    {
+      "name": "Recipe Detail",
+      "purpose": "Show step-by-step cooking instructions, ingredient breakdown, and nutritional information"
+    },
+    {
+      "name": "Shopping List",
+      "purpose": "Display items needed to complete the meal plan, organized by store section with quantities"
+    }
+  ],
+  "outOfScope": [
+    "Grocery delivery integration or shopping cart checkout",
+    "Real-time inventory tracking via smart fridge devices",
+    "Social sharing or meal plan marketplace",
+    "Mobile app (web only)",
+    "Restaurant or takeout recommendations"
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "productName": "StatusDual",
+  "oneLiner": "Transform rough status bullets into polished updates—automatically generate executive and team versions.",
+  "problem": "Team leads waste time rewriting status updates in different voices and detail levels for different audiences, leading to inconsistent messaging or context loss.",
+  "targetUser": "Engineering managers, product managers, and team leads who report to both executives and individual contributors.",
+  "tone": "clear, efficient, professional",
+  "platform": "web",
+  "coreFlow": [
+    "Paste rough status bullets into editor",
+    "AI analyzes and segments content by audience relevance",
+    "System generates executive summary (high-level, metrics-focused)",
+    "System generates team version (detailed, context-rich, action-oriented)",
+    "User reviews, edits, and approves both versions",
+    "Export or copy to clipboard"
+  ],
+  "screens": [
+    {
+      "name": "Input Editor",
+      "purpose": "Paste raw status bullets and optional context (project name, dates, priorities)"
+    },
+    {
+      "name": "Dual Preview",
+      "purpose": "Side-by-side view of executive and team versions with real-time generation"
+    },
+    {
+      "name": "Edit & Refine",
+      "purpose": "Tone sliders and manual editing controls for each version independently"
+    },
+    {
+      "name": "Export",
+      "purpose": "Copy, download, or send versions to email/Slack"
+    },
+    {
+      "name": "History",
+      "purpose": "Save and retrieve past status updates for reuse or reference"
+    }
+  ],
+  "outOfScope": [
+    "Direct Slack/Teams integration for sending",
+    "Multi-language support",
+    "Calendar-based scheduling of updates",
+    "Team collaboration or commenting on drafts",
+    "Analytics on update performance or engagement"
+  ]
+}

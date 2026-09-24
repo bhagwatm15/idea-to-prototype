@@ -1,0 +1,45 @@
+{
+  "productName": "FridgePlan",
+  "oneLiner": "An app that plans a week of meals around what's already in the fridge.",
+  "problem": "People waste food and money by not knowing what to cook with ingredients they already have, leading to redundant grocery shopping and meal planning paralysis.",
+  "targetUser": "Busy home cooks aged 25-45 who want to reduce food waste, save money, and simplify weekly meal planning.",
+  "tone": "practical, friendly, efficient",
+  "platform": "web",
+  "coreFlow": [
+    "User inventories current fridge/pantry items",
+    "User specifies dietary preferences and meal count for the week",
+    "App generates a customized meal plan using available ingredients",
+    "User reviews generated meals and can swap or adjust recipes",
+    "User views shopping list for any missing ingredients needed"
+  ],
+  "screens": [
+    {
+      "name": "Inventory Input",
+      "purpose": "Allow users to quickly add items currently in their fridge, freezer, and pantry with expiration dates"
+    },
+    {
+      "name": "Preferences Setup",
+      "purpose": "Capture dietary restrictions, cuisine preferences, and number of meals/servings needed for the week"
+    },
+    {
+      "name": "Meal Plan View",
+      "purpose": "Display the generated 7-day meal plan with recipes, organized by day"
+    },
+    {
+      "name": "Recipe Details",
+      "purpose": "Show full recipe with ingredients highlighted (what's available vs. what to buy) and cooking instructions"
+    },
+    {
+      "name": "Shopping List",
+      "purpose": "Generate organized shopping list for missing ingredients, with options to filter by store section"
+    }
+  ],
+  "outOfScope": [
+    "Grocery delivery or e-commerce integration",
+    "Nutritional tracking or calorie counting",
+    "Social features or recipe sharing",
+    "Mobile app version",
+    "Real-time fridge scanning via camera",
+    "Meal prep video tutorials"
+  ]
+}

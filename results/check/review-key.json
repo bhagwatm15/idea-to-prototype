@@ -1,0 +1,16 @@
+[
+  {
+    "label": "A",
+    "model": "claude-sonnet-5",
+    "ideaId": 1,
+    "run": 1,
+    "file": "code/idea1-sonnet-run1.jsx"
+  },
+  {
+    "label": "B",
+    "model": "claude-haiku-4-5-20251001",
+    "ideaId": 1,
+    "run": 1,
+    "file": "code/idea1-haiku-run1.jsx"
+  }
+]

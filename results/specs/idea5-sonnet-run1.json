@@ -1,0 +1,44 @@
+{
+  "productName": "TripTally",
+  "oneLiner": "Split shared trip expenses with friends in seconds, no spreadsheet required.",
+  "problem": "Group trips generate messy, scattered expenses across cash, cards, and apps, and manually tracking who owes what in a spreadsheet is tedious, error-prone, and often abandoned mid-trip.",
+  "targetUser": "Friends, couples, or groups who travel together and need a fast, low-friction way to track and settle shared costs.",
+  "tone": "friendly, clean, trustworthy",
+  "platform": "web",
+  "coreFlow": [
+    "Create a trip and add participants",
+    "Log an expense, choose who paid and who it's split between",
+    "App auto-calculates running balances for each person",
+    "View simplified 'who owes who' summary at any time",
+    "Mark debts as settled once paid back"
+  ],
+  "screens": [
+    {
+      "name": "Trip Dashboard",
+      "purpose": "Show all active trips with quick balance snapshots"
+    },
+    {
+      "name": "Trip Detail",
+      "purpose": "List all expenses in a trip and current participant balances"
+    },
+    {
+      "name": "Add Expense",
+      "purpose": "Quickly log who paid, amount, and split method"
+    },
+    {
+      "name": "Settle Up",
+      "purpose": "Show simplified debts and let users mark payments as complete"
+    },
+    {
+      "name": "Trip Setup",
+      "purpose": "Create a new trip and invite/add participants"
+    }
+  ],
+  "outOfScope": [
+    "Real payment processing or bank integrations",
+    "Currency conversion for multi-country trips",
+    "Receipt scanning / OCR",
+    "Native mobile apps",
+    "Recurring or non-trip expense tracking"
+  ]
+}

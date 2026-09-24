@@ -1,0 +1,45 @@
+{
+  "productName": "Decidely",
+  "oneLiner": "A shared log for capturing what was decided, why, and when—so teams stop relitigating the past.",
+  "problem": "Teams make important decisions in scattered Slack threads, meetings, and docs, then forget the reasoning behind them. This leads to repeated debates, lost context when people leave or join, and no clear record of accountability or timing for key choices.",
+  "targetUser": "Team leads, product managers, and founders at startups or fast-moving teams who need a lightweight system of record for decisions without the overhead of full project management tools.",
+  "tone": "clear, trustworthy, minimal",
+  "platform": "web",
+  "coreFlow": [
+    "User creates a new decision entry with a title and description",
+    "User records the context/reasoning and any alternatives considered",
+    "User tags stakeholders involved and sets the decision date",
+    "Entry is saved to a searchable, chronological log",
+    "Team members can browse, search, or filter past decisions by tag, date, or owner",
+    "Users can comment or add follow-up notes if a decision is revisited or reversed"
+  ],
+  "screens": [
+    {
+      "name": "Decision Log Feed",
+      "purpose": "Chronological, searchable list of all logged decisions with filters by tag, owner, or date"
+    },
+    {
+      "name": "New Decision Entry",
+      "purpose": "Form to capture the decision, rationale, alternatives considered, and stakeholders"
+    },
+    {
+      "name": "Decision Detail View",
+      "purpose": "Full view of a single decision including history, comments, and any status updates (active, reversed, superseded)"
+    },
+    {
+      "name": "Search & Filters",
+      "purpose": "Advanced search across all decisions by keyword, tag, team, or timeframe"
+    },
+    {
+      "name": "Team Settings",
+      "purpose": "Manage team members, tags/categories, and permissions for who can log or edit decisions"
+    }
+  ],
+  "outOfScope": [
+    "Task or project management features",
+    "Real-time chat or messaging",
+    "Automated decision-making or AI recommendations",
+    "Complex approval workflows or e-signatures",
+    "Native mobile apps (web-only for v1)"
+  ]
+}

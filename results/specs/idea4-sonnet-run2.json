@@ -1,0 +1,45 @@
+{
+  "productName": "Larder",
+  "oneLiner": "Larder turns the ingredients already in your fridge into a full week of planned meals.",
+  "problem": "People waste food and money because they buy groceries without a plan, forget what's already in their fridge, and default to takeout when they don't know what to cook with what's on hand.",
+  "targetUser": "Busy home cooks and families who want to reduce food waste, save money, and stop the daily 'what's for dinner' scramble.",
+  "tone": "warm, practical, encouraging",
+  "platform": "web",
+  "coreFlow": [
+    "User lists or updates what's currently in their fridge and pantry",
+    "User sets preferences (household size, dietary restrictions, cooking time)",
+    "App generates a 7-day meal plan prioritizing on-hand ingredients",
+    "User swaps or locks in meals they like from suggested options",
+    "App produces a shopping list for any missing ingredients",
+    "User marks meals as cooked, which updates remaining fridge inventory"
+  ],
+  "screens": [
+    {
+      "name": "Fridge Inventory",
+      "purpose": "Let users quickly add, edit, or remove items currently in their fridge and pantry"
+    },
+    {
+      "name": "Preferences Setup",
+      "purpose": "Capture dietary restrictions, household size, and cooking time constraints to personalize plans"
+    },
+    {
+      "name": "Weekly Meal Plan",
+      "purpose": "Display the generated 7-day meal plan with options to swap or lock individual meals"
+    },
+    {
+      "name": "Recipe Detail",
+      "purpose": "Show ingredients, steps, and prep time for a selected meal"
+    },
+    {
+      "name": "Shopping List",
+      "purpose": "Present a consolidated list of missing ingredients needed to complete the week's plan"
+    }
+  ],
+  "outOfScope": [
+    "Grocery delivery or e-commerce integration",
+    "Barcode scanning or smart fridge hardware connectivity",
+    "Detailed nutrition and calorie tracking",
+    "Social sharing or community recipe features",
+    "Multi-user real-time household syncing"
+  ]
+}

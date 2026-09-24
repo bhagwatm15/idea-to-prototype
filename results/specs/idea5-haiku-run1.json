@@ -1,0 +1,45 @@
+{
+  "productName": "SplitEasy",
+  "oneLiner": "A tool for splitting shared trip expenses without a spreadsheet.",
+  "problem": "Groups traveling together struggle to track who paid for what and calculate fair splits, leading to awkward conversations and disputes over money.",
+  "targetUser": "Friends and groups planning trips or shared outings who want a simple, friction-free way to manage shared expenses.",
+  "tone": "friendly, practical, no-nonsense",
+  "platform": "web",
+  "coreFlow": [
+    "Create a new trip and invite participants",
+    "Log expenses as they happen with payer and category",
+    "Automatically calculate who owes whom",
+    "View settlement summary and payment instructions",
+    "Mark payments as complete"
+  ],
+  "screens": [
+    {
+      "name": "Trip Dashboard",
+      "purpose": "Overview of all active trips with balance summaries and quick access to add expenses"
+    },
+    {
+      "name": "Expense Entry",
+      "purpose": "Quick form to log a new expense with payer, amount, category, and who it applies to"
+    },
+    {
+      "name": "Settlement Summary",
+      "purpose": "Clear breakdown showing who owes whom and simplified payment paths to minimize transfers"
+    },
+    {
+      "name": "Trip Members",
+      "purpose": "View all participants and their individual balances in the trip"
+    },
+    {
+      "name": "Expense History",
+      "purpose": "Complete log of all expenses with filtering and editing capabilities"
+    }
+  ],
+  "outOfScope": [
+    "Integrated payment processing or money transfers",
+    "Multi-currency conversion",
+    "Recurring or subscription expenses",
+    "Receipt photo upload or OCR",
+    "Mobile app (web only)",
+    "Social features like comments or messaging"
+  ]
+}

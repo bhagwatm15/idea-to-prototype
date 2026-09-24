@@ -1,0 +1,45 @@
+{
+  "productName": "Decido",
+  "oneLiner": "A living log of what your team decided, why, and when.",
+  "problem": "Teams make important decisions in meetings, chats, and docs that quickly get forgotten, re-litigated, or lost, wasting time and eroding trust when no one can recall the reasoning behind a choice.",
+  "targetUser": "Team leads, product managers, and founders who need a lightweight system of record for decisions made across projects and teams",
+  "tone": "clear, calm, trustworthy",
+  "platform": "web",
+  "coreFlow": [
+    "User creates a new decision entry with a title and short description",
+    "User adds the rationale, alternatives considered, and key stakeholders",
+    "User assigns tags/category and confirms the decision date",
+    "Decision is saved and appears in the searchable, chronological log",
+    "Team members browse, search, or filter past decisions by tag, date, or owner",
+    "Users can revisit a decision to add updates or mark it as superseded"
+  ],
+  "screens": [
+    {
+      "name": "Decision Feed",
+      "purpose": "Chronological, scannable list of all logged decisions with quick filters"
+    },
+    {
+      "name": "New Decision Form",
+      "purpose": "Capture the decision, context, rationale, and stakeholders"
+    },
+    {
+      "name": "Decision Detail",
+      "purpose": "Show full history, comments, and any follow-up updates for a single decision"
+    },
+    {
+      "name": "Search & Filter",
+      "purpose": "Find past decisions by keyword, tag, owner, or date range"
+    },
+    {
+      "name": "Team Settings",
+      "purpose": "Manage members, tags, and permissions for the decision log"
+    }
+  ],
+  "outOfScope": [
+    "Task or project management features",
+    "Real-time chat or messaging",
+    "Approval workflows or voting mechanisms",
+    "Third-party integrations (Slack, Jira, etc.)",
+    "Mobile app version"
+  ]
+}

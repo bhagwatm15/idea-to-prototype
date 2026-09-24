@@ -1,0 +1,44 @@
+{
+  "productName": "DecisionLog",
+  "oneLiner": "A decision log that tracks what was decided, why, and when.",
+  "problem": "Teams and individuals struggle to remember the reasoning behind past decisions, leading to repeated debates, inconsistent choices, and institutional knowledge loss when people leave.",
+  "targetUser": "Product managers, engineering leads, and team decision-makers at small to mid-sized organizations",
+  "tone": "clear, trustworthy, professional",
+  "platform": "web",
+  "coreFlow": [
+    "User creates a new decision entry with title, outcome, and rationale",
+    "System auto-captures timestamp and decision maker",
+    "User tags decision with category, status, and affected teams",
+    "User searches or filters past decisions by date, category, or keyword",
+    "User reviews decision context before revisiting similar choices"
+  ],
+  "screens": [
+    {
+      "name": "Decision Feed",
+      "purpose": "Homepage showing recent decisions with date, title, and decision maker for quick scanning"
+    },
+    {
+      "name": "Create Decision",
+      "purpose": "Form to log a new decision with fields for title, outcome, rationale, and tags"
+    },
+    {
+      "name": "Decision Detail",
+      "purpose": "Full view of a past decision showing all context, rationale, stakeholders, and ability to add follow-up notes"
+    },
+    {
+      "name": "Search & Filter",
+      "purpose": "Interface to find decisions by category, date range, decision maker, or keyword"
+    },
+    {
+      "name": "Settings",
+      "purpose": "Team workspace management, custom categories, and user permissions"
+    }
+  ],
+  "outOfScope": [
+    "Real-time collaboration or comments on decisions",
+    "Integration with external tools or calendar systems",
+    "Advanced analytics or decision performance metrics",
+    "Mobile native app",
+    "AI-powered decision recommendations"
+  ]
+}

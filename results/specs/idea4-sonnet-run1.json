@@ -1,0 +1,44 @@
+{
+  "productName": "FridgeWeek",
+  "oneLiner": "A web app that turns what's already in your fridge into a full week of meals.",
+  "problem": "People waste food and money because they don't know what to cook with what they already have, and planning meals from scratch each week feels tedious.",
+  "targetUser": "Busy home cooks and budget-conscious households who want to reduce food waste and simplify weekly meal planning.",
+  "tone": "fresh, friendly, practical",
+  "platform": "web",
+  "coreFlow": [
+    "User inputs or scans items currently in their fridge/pantry",
+    "App suggests a 7-day meal plan using available ingredients, flagging a few items to buy",
+    "User swaps or adjusts suggested meals based on preference",
+    "App generates a consolidated shopping list for missing ingredients",
+    "User checks off meals as cooked throughout the week, updating fridge inventory"
+  ],
+  "screens": [
+    {
+      "name": "Fridge Inventory",
+      "purpose": "Add, edit, or scan items currently in the fridge and pantry"
+    },
+    {
+      "name": "Weekly Plan",
+      "purpose": "View and adjust the generated 7-day meal plan"
+    },
+    {
+      "name": "Recipe Detail",
+      "purpose": "Show ingredients, steps, and substitutions for a selected meal"
+    },
+    {
+      "name": "Shopping List",
+      "purpose": "Display consolidated list of missing ingredients to buy"
+    },
+    {
+      "name": "Settings & Preferences",
+      "purpose": "Set dietary restrictions, household size, and cooking preferences"
+    }
+  ],
+  "outOfScope": [
+    "Grocery delivery or ordering integration",
+    "Barcode/receipt scanning hardware integration",
+    "Native mobile apps",
+    "Social sharing or community recipe features",
+    "Nutrition tracking or calorie counting"
+  ]
+}

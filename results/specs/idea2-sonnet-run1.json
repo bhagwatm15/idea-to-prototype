@@ -1,0 +1,44 @@
+{
+  "productName": "Brieflio",
+  "oneLiner": "Paste your rough status bullets and get two polished updates instantly: one for execs, one for your team.",
+  "problem": "People who write frequent status updates waste time reformatting the same information for different audiences, often stripping out detail for leadership or adding too much jargon for peers, leading to inconsistent, unclear communication.",
+  "targetUser": "Project managers, team leads, and individual contributors who send recurring status updates to both leadership and their immediate team",
+  "tone": "clean, professional, efficient",
+  "platform": "web",
+  "coreFlow": [
+    "User pastes or types rough status bullets into a single input box",
+    "User selects context (e.g. project name, audience emphasis, urgency)",
+    "Tool generates two versions: a concise exec summary and a detailed team update",
+    "User reviews and edits either version inline",
+    "User copies or exports the final versions to email, Slack, or docs"
+  ],
+  "screens": [
+    {
+      "name": "Input Screen",
+      "purpose": "Capture raw bullet points and optional context like project name or tone preference"
+    },
+    {
+      "name": "Dual Output Screen",
+      "purpose": "Display exec and team versions side by side for comparison and editing"
+    },
+    {
+      "name": "Edit & Refine Screen",
+      "purpose": "Allow inline tweaks, regeneration of a single version, or tone adjustments"
+    },
+    {
+      "name": "Export/Share Screen",
+      "purpose": "Copy to clipboard, download, or send directly to email/Slack integrations"
+    },
+    {
+      "name": "History Screen",
+      "purpose": "View and reuse past updates for recurring status reports"
+    }
+  ],
+  "outOfScope": [
+    "Real-time collaborative editing with multiple users",
+    "Native mobile apps",
+    "Direct integration with project management tools (e.g. Jira, Asana) for auto-pulling status data",
+    "Automated scheduling or sending of updates on a recurring basis",
+    "Support for languages other than English at launch"
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "productName": "Regroup",
+  "oneLiner": "Instantly re-orient when you switch projects—see the last decision, open blockers, and who's waiting on you.",
+  "problem": "PMs juggling multiple projects lose critical context every time they switch, spending the first 10-15 minutes reconstructing what happened last, who's blocked, and who's owed a response—often missing something important in the process.",
+  "targetUser": "Product managers and leads simultaneously running 3+ active projects who context-switch multiple times a day",
+  "tone": "calm, clear, focused",
+  "platform": "web",
+  "coreFlow": [
+    "PM lands on a home view listing all active projects with last-touched time and status glance",
+    "PM selects a project they're re-entering",
+    "Regroup surfaces a re-entry summary: the last decision made, its rationale, and date",
+    "PM reviews current blockers and a 'waiting on you / you're waiting on' list with names and ages",
+    "PM takes quick action—reply, reassign, snooze, or mark resolved—directly from the summary",
+    "PM switches to the next project and the cycle repeats"
+  ],
+  "screens": [
+    {
+      "name": "Project Switcher",
+      "purpose": "Give a bird's-eye view of all projects with last activity and health status for quick navigation"
+    },
+    {
+      "name": "Re-entry Summary",
+      "purpose": "Core screen showing the last decision, its context, and immediate blockers so a PM can regain footing in seconds"
+    },
+    {
+      "name": "Waiting-On Board",
+      "purpose": "List everyone waiting on the PM and everyone the PM is waiting on, with age and priority"
+    },
+    {
+      "name": "Decision Log",
+      "purpose": "Chronological history of key decisions per project for deeper context or audit"
+    },
+    {
+      "name": "Integrations Settings",
+      "purpose": "Connect Slack, Jira, or email so decisions and blockers can be logged with minimal manual entry"
+    }
+  ],
+  "outOfScope": [
+    "Full task/project management (replacing Jira, Asana, etc.)",
+    "Time tracking",
+    "Automated AI extraction of decisions from chat/email (v1)",
+    "Native mobile app",
+    "Team-wide reporting or executive dashboards"
+  ]
+}

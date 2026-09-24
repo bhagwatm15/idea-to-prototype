@@ -1,0 +1,44 @@
+{
+  "productName": "ContextSwitch",
+  "oneLiner": "A dashboard that helps PMs re-orient when switching between projects, showing the last decision made, blockers, and who's waiting on what.",
+  "problem": "Product managers frequently context-switch between multiple projects and lose momentum due to forgotten decisions, invisible blockers, and unclear dependency chains. This leads to delayed communications, duplicated work, and stalled initiatives.",
+  "targetUser": "Product managers managing 2+ concurrent projects",
+  "tone": "clear, efficient, reassuring",
+  "platform": "web",
+  "coreFlow": [
+    "User lands on dashboard and sees all active projects",
+    "User clicks a project to view re-orientation snapshot",
+    "Snapshot displays: last decision made, current blockers, and pending dependencies",
+    "User can acknowledge they've reviewed the snapshot or drill deeper into specific items",
+    "User can update blockers or dependencies directly from the view"
+  ],
+  "screens": [
+    {
+      "name": "Project Grid",
+      "purpose": "Show all active projects at a glance with time-since-last-visit indicator and number of pending items"
+    },
+    {
+      "name": "Project Snapshot",
+      "purpose": "Display the essential re-orientation info: last decision, active blockers, and who's waiting on PM"
+    },
+    {
+      "name": "Decision Log",
+      "purpose": "Show recent decisions for the project with timestamps and context"
+    },
+    {
+      "name": "Blocker Board",
+      "purpose": "List all blockers with owner, priority, and estimated resolution date"
+    },
+    {
+      "name": "Dependency View",
+      "purpose": "Visualize tasks/decisions waiting on the PM and tasks the PM is waiting on from others"
+    }
+  ],
+  "outOfScope": [
+    "Full project management (timelines, resource allocation, roadmap planning)",
+    "Integrations with all third-party tools (can start with Slack, Linear, or Jira)",
+    "Mobile app version",
+    "AI-powered decision summarization",
+    "Cross-project analytics and reporting"
+  ]
+}

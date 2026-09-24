@@ -1,0 +1,38 @@
+{
+  "productName": "Context",
+  "oneLiner": "A dashboard that helps PMs re-orient when switching between projects, showing the last decision made, blockers, and who's waiting on what.",
+  "problem": "PMs lose critical context when juggling multiple projects, wasting time on re-onboarding themselves to each project's status, decisions, and dependencies.",
+  "targetUser": "Product managers managing 2+ concurrent projects",
+  "tone": "clear, efficient, focused",
+  "platform": "web",
+  "coreFlow": [
+    "User logs in and sees dashboard with all active projects",
+    "User selects a project to view its context snapshot",
+    "User reviews last decision, current blockers, and pending dependencies",
+    "User navigates back to dashboard or drills into deeper project details"
+  ],
+  "screens": [
+    {
+      "name": "Dashboard",
+      "purpose": "Show all active projects with quick-glance status indicators and last updated timestamps"
+    },
+    {
+      "name": "Project Context View",
+      "purpose": "Display the last major decision, active blockers, and list of people/teams waiting on this PM"
+    },
+    {
+      "name": "Blocker Details",
+      "purpose": "Deep dive into a specific blocker with owner, timeline, and resolution path"
+    },
+    {
+      "name": "Dependency Map",
+      "purpose": "Visualize who is waiting on what decisions or deliverables from this project"
+    }
+  ],
+  "outOfScope": [
+    "Project planning or roadmap management",
+    "Real-time collaboration or commenting",
+    "Time tracking or project accounting",
+    "Integration with every project management tool (initial launch supports 2-3 platforms)"
+  ]
+}

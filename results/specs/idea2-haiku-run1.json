@@ -1,0 +1,46 @@
+{
+  "productName": "StatusSplit",
+  "oneLiner": "Transform raw status bullets into polished updates tailored for executives and teams",
+  "problem": "Professionals waste time rewriting status updates in different tones and detail levels for different audiences, often producing inconsistent or unclear messaging across stakeholder groups",
+  "targetUser": "Individual contributors, team leads, and project managers who regularly communicate progress to multiple stakeholder levels",
+  "tone": "Professional, efficient, clear",
+  "platform": "web",
+  "coreFlow": [
+    "Paste or type raw status bullets into input field",
+    "AI processes content and generates two distinct versions",
+    "Review executive summary (concise, strategic focus)",
+    "Review team version (detailed, tactical focus)",
+    "Edit either version inline as needed",
+    "Copy to clipboard or export both versions"
+  ],
+  "screens": [
+    {
+      "name": "Input Dashboard",
+      "purpose": "Primary interface for pasting or typing rough status bullets with optional context about project/team"
+    },
+    {
+      "name": "Dual Output View",
+      "purpose": "Side-by-side comparison of executive and team versions with clear visual distinction"
+    },
+    {
+      "name": "Editor Panel",
+      "purpose": "Inline editing capabilities for each version with real-time adjustments and tone indicators"
+    },
+    {
+      "name": "Export/Share Modal",
+      "purpose": "Options to copy, download, or share individual versions via email or collaboration tools"
+    },
+    {
+      "name": "History/Templates",
+      "purpose": "Access to previous updates and customizable templates for recurring status patterns"
+    }
+  ],
+  "outOfScope": [
+    "Direct integration with calendar or project management tools",
+    "Team collaboration or commenting on generated versions",
+    "Multi-language support",
+    "Mobile app (web-only)",
+    "AI model training on user data",
+    "Real-time co-editing features"
+  ]
+}

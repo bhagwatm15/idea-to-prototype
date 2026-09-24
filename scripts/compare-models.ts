@@ -38,8 +38,8 @@ interface ModelConfig {
 
 // IDs checked against platform.claude.com/docs/en/about-claude/models/overview on 2026-09-24.
 const MODELS: ModelConfig[] = [
-  { id: "claude-sonnet-5", slug: "sonnet", pricePerMTok: { input: null, output: null } },
-  { id: "claude-haiku-4-5-20251001", slug: "haiku", pricePerMTok: { input: null, output: null } },
+  { id: "claude-sonnet-5", slug: "sonnet", pricePerMTok: { input: 2, output: 10 } },
+  { id: "claude-haiku-4-5-20251001", slug: "haiku", pricePerMTok: { input: 1, output: 5 } },
 ];
 
 const CONFIG = {

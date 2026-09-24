@@ -1,0 +1,45 @@
+{
+  "productName": "Resume",
+  "oneLiner": "A dashboard that instantly re-orients PMs switching between projects by surfacing the last decision made, open blockers, and who's waiting on what.",
+  "problem": "PMs juggle multiple projects at once and lose critical context every time they switch, wasting the first 10-15 minutes on each project reconstructing 'where did we leave off' instead of taking action.",
+  "targetUser": "Product managers overseeing 3+ concurrent projects who context-switch between them multiple times a day and rely on scattered tools (Slack, docs, tickets) to reconstruct status.",
+  "tone": "clean, calm, focused",
+  "platform": "web",
+  "coreFlow": [
+    "PM logs in and sees a list of active projects with last-touched time and health signal",
+    "PM selects a project to re-enter",
+    "Dashboard surfaces the last decision made, including rationale and date",
+    "Dashboard shows current blockers with owners and status",
+    "Dashboard shows who's waiting on the PM and what they need",
+    "PM takes action (respond, unblock, delegate) or marks context reviewed and switches to the next project"
+  ],
+  "screens": [
+    {
+      "name": "Project Switcher",
+      "purpose": "Give a bird's-eye view of all active projects with status and last activity so the PM can choose where to jump in"
+    },
+    {
+      "name": "Re-entry Brief",
+      "purpose": "Single consolidated view showing the last decision, open blockers, and who's waiting, so the PM regains context in seconds"
+    },
+    {
+      "name": "Decision Log",
+      "purpose": "Chronological history of key decisions per project for deeper context or audit"
+    },
+    {
+      "name": "Blocker Detail",
+      "purpose": "Drill into a specific blocker to see owner, timeline, and update its status"
+    },
+    {
+      "name": "Waiting-On Queue",
+      "purpose": "Cross-project list of everyone currently waiting on the PM, prioritized by urgency"
+    }
+  ],
+  "outOfScope": [
+    "Full task/project management (not a replacement for Jira, Linear, or Asana)",
+    "Real-time chat or messaging",
+    "Time tracking or reporting",
+    "Native mobile app in v1",
+    "AI-generated decisions or automated prioritization in v1"
+  ]
+}

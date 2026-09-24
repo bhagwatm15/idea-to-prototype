@@ -1,0 +1,21 @@
+label,idea_id,score,notes
+A,1,3,took a while to figure navigation.
+B,1,4,easy to navigate but Blocker doesn't load anything for all projects.
+C,1,1,not working
+D,1,2,"complicated navigation. Mandatory mark caught up before exiting to projects. No additional, reply to folks waiting. "
+E,2,3,updates approp to the audience but unnecessary third category added 'stakeholder'.
+F,2,4,"better UX and UI. Includes additional functionality to share via email or slack, choose the project name in the beginning.  "
+G,2,4,same as F. With a slight change of color scheme and additional options which are not quite critical not adding anything groundbreaking.
+H,2,3,"Header with all inputs squeezed to far left is hard to notice and hard to reach quickly. The preview includes both updates together, should be separate. "
+I,3,3,"There's option to add updates but where do you add it from, diff to figure out. Easy to navigate but New decision is a tab not a button. took time to figure that out."
+J,3,4,New decision is at the top. Can't add updates decisions though should make a new one each time. No log in that case.
+K,3,3,same as I just a different font. overall not a loud UI. Same issue as I. No new decision button instead a tab on main page. Hard to locate.
+L,3,3,"professional look, still missing imp functionality like where to add updates. New decision is a tab but this time easy to find. "
+M,4,3,easy on eyes fun UI. Good functionalities over all. 
+N,4,3,The tabs at the bottom of the screen look awkward. View recipe is placed in front no need to go digging. Shopping list is not editable. 
+O,4,4,Better UX and UI. Option to scan and swap is modern and convenient. shopping list not editable
+P,4,5,"looks like mobile app. Nice warm, inviting look. Best look and feel overall. "
+Q,5,3,no back to summary etc option from add expense. Basic and simple look.
+R,5,4,"looks like mobile app. Polished, but tabs at the bottom, titles are confusing - Trip, Trips. "
+S,5,3,Add expense should be inside expenses. Basic and simple look but readable and can follow well. 
+T,5,5,"Best look, very modern and upbeat. Tabs on the top and easy to follow. "

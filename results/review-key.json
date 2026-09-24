@@ -1,0 +1,142 @@
+[
+  {
+    "label": "A",
+    "model": "claude-sonnet-5",
+    "ideaId": 1,
+    "run": 2,
+    "file": "code/idea1-sonnet-run2.jsx"
+  },
+  {
+    "label": "B",
+    "model": "claude-haiku-4-5-20251001",
+    "ideaId": 1,
+    "run": 1,
+    "file": "code/idea1-haiku-run1.jsx"
+  },
+  {
+    "label": "C",
+    "model": "claude-sonnet-5",
+    "ideaId": 1,
+    "run": 1,
+    "file": "code/idea1-sonnet-run1.jsx"
+  },
+  {
+    "label": "D",
+    "model": "claude-haiku-4-5-20251001",
+    "ideaId": 1,
+    "run": 2,
+    "file": "code/idea1-haiku-run2.jsx"
+  },
+  {
+    "label": "E",
+    "model": "claude-haiku-4-5-20251001",
+    "ideaId": 2,
+    "run": 2,
+    "file": "code/idea2-haiku-run2.jsx"
+  },
+  {
+    "label": "F",
+    "model": "claude-sonnet-5",
+    "ideaId": 2,
+    "run": 1,
+    "file": "code/idea2-sonnet-run1.jsx"
+  },
+  {
+    "label": "G",
+    "model": "claude-sonnet-5",
+    "ideaId": 2,
+    "run": 2,
+    "file": "code/idea2-sonnet-run2.jsx"
+  },
+  {
+    "label": "H",
+    "model": "claude-haiku-4-5-20251001",
+    "ideaId": 2,
+    "run": 1,
+    "file": "code/idea2-haiku-run1.jsx"
+  },
+  {
+    "label": "I",
+    "model": "claude-sonnet-5",
+    "ideaId": 3,
+    "run": 2,
+    "file": "code/idea3-sonnet-run2.jsx"
+  },
+  {
+    "label": "J",
+    "model": "claude-haiku-4-5-20251001",
+    "ideaId": 3,
+    "run": 1,
+    "file": "code/idea3-haiku-run1.jsx"
+  },
+  {
+    "label": "K",
+    "model": "claude-sonnet-5",
+    "ideaId": 3,
+    "run": 1,
+    "file": "code/idea3-sonnet-run1.jsx"
+  },
+  {
+    "label": "L",
+    "model": "claude-haiku-4-5-20251001",
+    "ideaId": 3,
+    "run": 2,
+    "file": "code/idea3-haiku-run2.jsx"
+  },
+  {
+    "label": "M",
+    "model": "claude-haiku-4-5-20251001",
+    "ideaId": 4,
+    "run": 2,
+    "file": "code/idea4-haiku-run2.jsx"
+  },
+  {
+    "label": "N",
+    "model": "claude-haiku-4-5-20251001",
+    "ideaId": 4,
+    "run": 1,
+    "file": "code/idea4-haiku-run1.jsx"
+  },
+  {
+    "label": "O",
+    "model": "claude-sonnet-5",
+    "ideaId": 4,
+    "run": 1,
+    "file": "code/idea4-sonnet-run1.jsx"
+  },
+  {
+    "label": "P",
+    "model": "claude-sonnet-5",
+    "ideaId": 4,
+    "run": 2,
+    "file": "code/idea4-sonnet-run2.jsx"
+  },
+  {
+    "label": "Q",
+    "model": "claude-haiku-4-5-20251001",
+    "ideaId": 5,
+    "run": 2,
+    "file": "code/idea5-haiku-run2.jsx"
+  },
+  {
+    "label": "R",
+    "model": "claude-sonnet-5",
+    "ideaId": 5,
+    "run": 1,
+    "file": "code/idea5-sonnet-run1.jsx"
+  },
+  {
+    "label": "S",
+    "model": "claude-haiku-4-5-20251001",
+    "ideaId": 5,
+    "run": 1,
+    "file": "code/idea5-haiku-run1.jsx"
+  },
+  {
+    "label": "T",
+    "model": "claude-sonnet-5",
+    "ideaId": 5,
+    "run": 2,
+    "file": "code/idea5-sonnet-run2.jsx"
+  }
+]

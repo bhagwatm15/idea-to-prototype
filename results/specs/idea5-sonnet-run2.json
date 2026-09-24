@@ -1,0 +1,44 @@
+{
+  "productName": "Splitwise Lite",
+  "oneLiner": "Split shared trip expenses instantly without touching a spreadsheet.",
+  "problem": "Groups traveling together struggle to track who paid for what and end up building messy, error-prone spreadsheets to calculate who owes whom at the end of a trip.",
+  "targetUser": "Friends, couples, or small groups planning trips together who want a fast, low-friction way to log and settle shared expenses.",
+  "tone": "friendly, clean, casual",
+  "platform": "web",
+  "coreFlow": [
+    "Create a trip and add participants",
+    "Log an expense, select who paid and who it's split between",
+    "App auto-calculates each person's balance in real time",
+    "View simplified settlement suggestions (who pays whom)",
+    "Mark payments as settled once completed"
+  ],
+  "screens": [
+    {
+      "name": "Trip Dashboard",
+      "purpose": "Show trip name, participants, and running total of expenses"
+    },
+    {
+      "name": "Add Expense",
+      "purpose": "Quickly log a cost, payer, amount, and split method"
+    },
+    {
+      "name": "Balances Overview",
+      "purpose": "Display each participant's net balance for the trip"
+    },
+    {
+      "name": "Settle Up",
+      "purpose": "Show simplified payment suggestions to close out balances"
+    },
+    {
+      "name": "Trip History",
+      "purpose": "List all past expenses with edit/delete options"
+    }
+  ],
+  "outOfScope": [
+    "Multi-currency conversion",
+    "Bank account integration or automatic payments",
+    "Receipt scanning via OCR",
+    "Native mobile apps (iOS/Android)",
+    "Recurring/subscription expense tracking"
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "productName": "Resume",
+  "oneLiner": "A re-entry dashboard that tells PMs exactly where each project stands the moment they switch back to it.",
+  "problem": "PMs juggling multiple projects lose critical context every time they switch, spending the first 10-15 minutes reconstructing what happened, who's blocked, and who's waiting on them instead of actually moving work forward.",
+  "targetUser": "Product managers or team leads simultaneously running 3+ active projects who context-switch multiple times a day",
+  "tone": "calm, clear, focused",
+  "platform": "web",
+  "coreFlow": [
+    "PM lands on a project switcher showing all active projects with at-a-glance status flags",
+    "PM selects a project to re-enter",
+    "Dashboard surfaces the re-entry summary: last decision made, current blockers, and who's waiting on what",
+    "PM drills into a blocker or decision for more context if needed",
+    "PM takes action (unblock someone, log a new decision, reply to a waiting party) directly from the summary",
+    "PM marks context as 'caught up' before switching to the next project"
+  ],
+  "screens": [
+    {
+      "name": "Project Switcher",
+      "purpose": "Give a bird's-eye view of all active projects with quick health/status indicators so the PM can prioritize where to re-enter"
+    },
+    {
+      "name": "Re-entry Summary",
+      "purpose": "Show the last decision made, active blockers, and who's waiting on what for the selected project — the core 'catch me up' view"
+    },
+    {
+      "name": "Decision Log",
+      "purpose": "Provide a chronological history of key decisions on the project so the PM can trace how the current state was reached"
+    },
+    {
+      "name": "Blocker Detail",
+      "purpose": "Show specifics on a blocker: who's affected, why it's stuck, how long it's been open, and suggested next action"
+    },
+    {
+      "name": "Waiting-On Queue",
+      "purpose": "Aggregate everything waiting on the PM across all projects, so they can clear obligations before switching contexts"
+    }
+  ],
+  "outOfScope": [
+    "Full task/project management (replacing tools like Jira or Asana)",
+    "Team chat or messaging functionality",
+    "Time tracking",
+    "Roadmapping and long-term planning views",
+    "Resource allocation and capacity planning"
+  ]
+}
