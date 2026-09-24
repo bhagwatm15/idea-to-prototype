@@ -71,6 +71,20 @@ const PROTOTYPE_ROUTE = path.join(ROOT, "app/api/generate-prototype/route.ts");
 const ENV_FILE = path.join(ROOT, ".env.local");
 if (existsSync(ENV_FILE)) process.loadEnvFile(ENV_FILE);
 
+/** Explain why no key was found instead of letting every run fail with an auth error. */
+function missingKeyMessage(): string | null {
+  if (process.env.ANTHROPIC_API_KEY?.trim() || process.env.ANTHROPIC_AUTH_TOKEN?.trim()) return null;
+  if (!existsSync(ENV_FILE)) {
+    const hint = existsSync(`${ENV_FILE}.txt`) ? ` Found ${ENV_FILE}.txt instead; rename it to drop ".txt".` : "";
+    return `ANTHROPIC_API_KEY is not set and ${ENV_FILE} does not exist.${hint}`;
+  }
+  const bytes = readFileSync(ENV_FILE);
+  if ((bytes[0] === 0xff && bytes[1] === 0xfe) || (bytes[0] === 0xfe && bytes[1] === 0xff)) {
+    return `${ENV_FILE} is saved as UTF-16, which Node can't read. Re-save it as UTF-8 or ASCII.`;
+  }
+  return `${ENV_FILE} exists but has no ANTHROPIC_API_KEY=... line.`;
+}
+
 interface RouteCall {
   buildPrompt: (...args: string[]) => string;
   maxTokens: number;
@@ -639,6 +653,12 @@ async function main() {
   const runs = Number(values.runs);
   const outDir = path.resolve(ROOT, values.out!);
   mkdirSync(outDir, { recursive: true });
+
+  const keyProblem = step === "report" ? null : missingKeyMessage();
+  if (keyProblem) {
+    console.error(keyProblem);
+    process.exit(1);
+  }
 
   const store = new RunStore(path.join(outDir, "runs.json"));
   if (step === "spec" || step === "all") await runSpecStep(outDir, store, ideaIds, runs);
