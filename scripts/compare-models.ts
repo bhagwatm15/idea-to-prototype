@@ -229,14 +229,23 @@ interface RunRecord {
   latencyMs: number | null;
   inputTokens: number | null;
   outputTokens: number | null;
+  /** From the API response; null only when the call itself failed. */
   stopReason: string | null;
+  /** stop_reason === "max_tokens". A truncated run fails its step's check even if the partial output passes. */
+  truncated: boolean | null;
   /** Content block types in order, e.g. "text" or "thinking+text". The live app reads content[0] only. */
   contentBlocks: string | null;
+  /** Raw check: the text parsed as JSON, regardless of truncation. */
   jsonParsed: boolean | null;
+  /** Spec step pass: parsed, passed the app's validation, and not truncated. */
   specValid: boolean | null;
+  /** Raw check: contains "export default", regardless of truncation. */
   hasDefaultExport: boolean | null;
+  /** Raw check: esbuild compiled it, regardless of truncation. */
   compiles: boolean | null;
   compileError: string | null;
+  /** Code step pass: has a default export, compiles, and not truncated. */
+  codeValid: boolean | null;
   attempts: number | null;
   error: string | null;
   /** Relative to the results directory. */
@@ -257,12 +266,14 @@ function blankRecord(step: Step, model: string, ideaId: number, run: number): Ru
     inputTokens: null,
     outputTokens: null,
     stopReason: null,
+    truncated: null,
     contentBlocks: null,
     jsonParsed: null,
     specValid: null,
     hasDefaultExport: null,
     compiles: null,
     compileError: null,
+    codeValid: null,
     attempts: null,
     error: null,
     outputFile: null,
@@ -276,6 +287,7 @@ function recordCall(record: RunRecord, { message, latencyMs, attempts }: CallRes
   record.inputTokens = message.usage.input_tokens;
   record.outputTokens = message.usage.output_tokens;
   record.stopReason = message.stop_reason;
+  record.truncated = message.stop_reason === "max_tokens";
   record.contentBlocks = message.content.map((block) => block.type).join("+");
   record.attempts = attempts;
 }
@@ -284,11 +296,20 @@ function slugFor(model: string): string {
   return CONFIG.models.find((m) => m.id === model)?.slug ?? model;
 }
 
+/** Fill in truncated/codeValid for runs recorded before those fields existed. */
+function backfillTruncation(r: RunRecord) {
+  if (r.truncated !== undefined) return;
+  r.truncated = r.stopReason === null ? null : r.stopReason === "max_tokens";
+  if (r.truncated && r.specValid) r.specValid = false;
+  r.codeValid = r.hasDefaultExport === null ? null : Boolean(r.hasDefaultExport && r.compiles && !r.truncated);
+}
+
 class RunStore {
   readonly records: RunRecord[];
 
   constructor(private readonly file: string) {
     this.records = existsSync(file) ? JSON.parse(readFileSync(file, "utf8")) : [];
+    for (const r of this.records) backfillTruncation(r);
   }
 
   /** Replace any earlier record for the same step/model/idea/run, then persist. */
@@ -325,8 +346,8 @@ async function runSpecStep(outDir: string, store: RunStore, ideaIds: number[], r
           } catch {
             record.jsonParsed = false;
           }
-          record.specValid = record.jsonParsed && isValidSpec(parsed);
-          // Parsed output is saved as JSON; anything else is saved raw so it can be inspected.
+          record.specValid = record.jsonParsed && isValidSpec(parsed) && !record.truncated;
+          // Parsed output is saved as JSON; anything else (including partial output) is saved raw.
           record.outputFile = record.jsonParsed ? `${base}.json` : `${base}.txt`;
           writeFileSync(
             path.join(outDir, record.outputFile),
@@ -366,6 +387,8 @@ async function runCodeStep(outDir: string, store: RunStore, ideaIds: number[], r
           record.hasDefaultExport = code.includes("export default");
           record.compileError = await compileError(code);
           record.compiles = record.compileError === null;
+          record.codeValid = record.hasDefaultExport && record.compiles && !record.truncated;
+          // Saved even when truncated or broken, so partial output can be inspected.
           record.outputFile = `code/idea${ideaId}-${slugFor(model)}-run${run}.jsx`;
           writeFileSync(path.join(outDir, record.outputFile), code + "\n");
         } catch (error) {
@@ -383,10 +406,11 @@ function logRecord(r: RunRecord) {
     ? `ERROR ${r.error}`
     : r.step === "spec"
       ? `parsed=${r.jsonParsed} valid=${r.specValid}`
-      : `export=${r.hasDefaultExport} compiles=${r.compiles}`;
+      : `export=${r.hasDefaultExport} compiles=${r.compiles} valid=${r.codeValid}`;
   console.log(
     `${r.step} idea${r.ideaId} ${r.model} run${r.run}: ${r.latencyMs ?? "-"}ms ` +
       `in=${r.inputTokens ?? "-"} out=${r.outputTokens ?? "-"} stop=${r.stopReason ?? "-"} ` +
+      `${r.truncated ? "TRUNCATED " : ""}` +
       `blocks=${r.contentBlocks ?? "-"} ${status}`
   );
 }
@@ -414,22 +438,20 @@ function writeCsv(outDir: string, records: RunRecord[]) {
     ["output_tokens", (r) => r.outputTokens],
     ["cost_usd", (r) => costUsd(r)?.toFixed(6)],
     ["stop_reason", (r) => r.stopReason],
+    ["truncated", (r) => r.truncated],
     ["content_blocks", (r) => r.contentBlocks],
     ["json_parsed", (r) => r.jsonParsed],
     ["spec_valid", (r) => r.specValid],
     ["has_default_export", (r) => r.hasDefaultExport],
     ["compiles", (r) => r.compiles],
     ["compile_error", (r) => r.compileError],
+    ["code_valid", (r) => r.codeValid],
     ["attempts", (r) => r.attempts],
     ["error", (r) => r.error],
     ["output_file", (r) => r.outputFile],
     ["input_spec_file", (r) => r.inputSpecFile],
     ["timestamp", (r) => r.timestamp],
   ];
-  const cell = (value: unknown) => {
-    const s = value === null || value === undefined ? "" : String(value);
-    return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-  };
   const lines = [
     columns.map(([name]) => name).join(","),
     ...[...records]
@@ -440,9 +462,63 @@ function writeCsv(outDir: string, records: RunRecord[]) {
           a.model.localeCompare(b.model) ||
           a.run - b.run
       )
-      .map((r) => columns.map(([, get]) => cell(get(r))).join(",")),
+      .map((r) => columns.map(([, get]) => csvCell(get(r))).join(",")),
   ];
   writeFileSync(path.join(outDir, "runs.csv"), lines.join("\n") + "\n");
+}
+
+const csvCell = (value: unknown) => {
+  const s = value === null || value === undefined ? "" : String(value);
+  return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+};
+
+/**
+ * Per step and model: truncation count and pass rates. Rates are over all runs,
+ * so API errors and truncated runs count as failures.
+ */
+function writeSummary(outDir: string, records: RunRecord[]) {
+  const checks: Record<Step, [string, (r: RunRecord) => boolean | null][]> = {
+    spec: [
+      ["json_parsed", (r) => r.jsonParsed],
+      ["spec_valid", (r) => r.specValid],
+    ],
+    code: [
+      ["has_default_export", (r) => r.hasDefaultExport],
+      ["compiles", (r) => r.compiles],
+      ["code_valid", (r) => r.codeValid],
+    ],
+  };
+  const header = ["step", "model", "runs", "api_errors", "truncated", "check", "passed", "pass_rate"];
+  const rows: string[][] = [];
+  for (const step of STEP_ORDER) {
+    for (const { id: model } of CONFIG.models) {
+      const group = records.filter((r) => r.step === step && r.model === model);
+      if (group.length === 0) continue;
+      const errors = group.filter((r) => r.error).length;
+      const truncated = group.filter((r) => r.truncated).length;
+      for (const [check, get] of checks[step]) {
+        const passed = group.filter((r) => get(r) === true).length;
+        rows.push([
+          step,
+          model,
+          String(group.length),
+          String(errors),
+          String(truncated),
+          check,
+          String(passed),
+          `${Math.round((passed / group.length) * 100)}%`,
+        ]);
+      }
+    }
+  }
+  writeFileSync(
+    path.join(outDir, "summary.csv"),
+    [header, ...rows].map((row) => row.map(csvCell).join(",")).join("\n") + "\n"
+  );
+
+  const widths = header.map((h, i) => Math.max(h.length, ...rows.map((row) => row[i].length)));
+  const line = (row: string[]) => row.map((cell, i) => cell.padEnd(widths[i])).join("  ");
+  console.log(["", line(header), ...rows.map(line), ""].join("\n"));
 }
 
 interface KeyEntry {
@@ -665,8 +741,9 @@ async function main() {
   if (step === "code" || step === "all") await runCodeStep(outDir, store, ideaIds, runs);
 
   writeCsv(outDir, store.records);
+  writeSummary(outDir, store.records);
   writeReviewPage(outDir, store.records);
-  console.log(`Wrote ${path.relative(ROOT, outDir)}/runs.csv (${store.records.length} runs)`);
+  console.log(`Wrote ${path.relative(ROOT, outDir)}/runs.csv (${store.records.length} runs) and summary.csv`);
 }
 
 main().catch((error) => {
