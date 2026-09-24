@@ -17,6 +17,7 @@ import { transform } from "esbuild";
 import { randomInt } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import type { Screen, Spec } from "../lib/types";
 
@@ -61,7 +62,8 @@ const IDEAS = [
 // Prompts and checks, taken from the live app
 // ---------------------------------------------------------------------------
 
-const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
+// fileURLToPath, not URL.pathname: on Windows the latter gives "/C:/..." and resolves to "C:\C:\...".
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SPEC_ROUTE = path.join(ROOT, "app/api/generate-spec/route.ts");
 const PROTOTYPE_ROUTE = path.join(ROOT, "app/api/generate-prototype/route.ts");
 
