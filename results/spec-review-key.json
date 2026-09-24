@@ -1,0 +1,142 @@
+[
+  {
+    "label": "A",
+    "model": "claude-haiku-4-5-20251001",
+    "ideaId": 1,
+    "run": 1,
+    "file": "specs/idea1-haiku-run1.json"
+  },
+  {
+    "label": "B",
+    "model": "claude-sonnet-5",
+    "ideaId": 1,
+    "run": 1,
+    "file": "specs/idea1-sonnet-run1.json"
+  },
+  {
+    "label": "C",
+    "model": "claude-sonnet-5",
+    "ideaId": 1,
+    "run": 2,
+    "file": "specs/idea1-sonnet-run2.json"
+  },
+  {
+    "label": "D",
+    "model": "claude-haiku-4-5-20251001",
+    "ideaId": 1,
+    "run": 2,
+    "file": "specs/idea1-haiku-run2.json"
+  },
+  {
+    "label": "E",
+    "model": "claude-sonnet-5",
+    "ideaId": 2,
+    "run": 1,
+    "file": "specs/idea2-sonnet-run1.json"
+  },
+  {
+    "label": "F",
+    "model": "claude-sonnet-5",
+    "ideaId": 2,
+    "run": 2,
+    "file": "specs/idea2-sonnet-run2.json"
+  },
+  {
+    "label": "G",
+    "model": "claude-haiku-4-5-20251001",
+    "ideaId": 2,
+    "run": 2,
+    "file": "specs/idea2-haiku-run2.json"
+  },
+  {
+    "label": "H",
+    "model": "claude-haiku-4-5-20251001",
+    "ideaId": 2,
+    "run": 1,
+    "file": "specs/idea2-haiku-run1.json"
+  },
+  {
+    "label": "I",
+    "model": "claude-haiku-4-5-20251001",
+    "ideaId": 3,
+    "run": 2,
+    "file": "specs/idea3-haiku-run2.json"
+  },
+  {
+    "label": "J",
+    "model": "claude-sonnet-5",
+    "ideaId": 3,
+    "run": 2,
+    "file": "specs/idea3-sonnet-run2.json"
+  },
+  {
+    "label": "K",
+    "model": "claude-sonnet-5",
+    "ideaId": 3,
+    "run": 1,
+    "file": "specs/idea3-sonnet-run1.json"
+  },
+  {
+    "label": "L",
+    "model": "claude-haiku-4-5-20251001",
+    "ideaId": 3,
+    "run": 1,
+    "file": "specs/idea3-haiku-run1.json"
+  },
+  {
+    "label": "M",
+    "model": "claude-haiku-4-5-20251001",
+    "ideaId": 4,
+    "run": 2,
+    "file": "specs/idea4-haiku-run2.json"
+  },
+  {
+    "label": "N",
+    "model": "claude-sonnet-5",
+    "ideaId": 4,
+    "run": 1,
+    "file": "specs/idea4-sonnet-run1.json"
+  },
+  {
+    "label": "O",
+    "model": "claude-haiku-4-5-20251001",
+    "ideaId": 4,
+    "run": 1,
+    "file": "specs/idea4-haiku-run1.json"
+  },
+  {
+    "label": "P",
+    "model": "claude-sonnet-5",
+    "ideaId": 4,
+    "run": 2,
+    "file": "specs/idea4-sonnet-run2.json"
+  },
+  {
+    "label": "Q",
+    "model": "claude-sonnet-5",
+    "ideaId": 5,
+    "run": 2,
+    "file": "specs/idea5-sonnet-run2.json"
+  },
+  {
+    "label": "R",
+    "model": "claude-sonnet-5",
+    "ideaId": 5,
+    "run": 1,
+    "file": "specs/idea5-sonnet-run1.json"
+  },
+  {
+    "label": "S",
+    "model": "claude-haiku-4-5-20251001",
+    "ideaId": 5,
+    "run": 1,
+    "file": "specs/idea5-haiku-run1.json"
+  },
+  {
+    "label": "T",
+    "model": "claude-haiku-4-5-20251001",
+    "ideaId": 5,
+    "run": 2,
+    "file": "specs/idea5-haiku-run2.json"
+  }
+]

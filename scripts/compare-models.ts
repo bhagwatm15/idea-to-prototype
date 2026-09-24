@@ -557,13 +557,13 @@ function labelFor(index: number): string {
 }
 
 /**
- * Assign blind labels to code outputs: grouped by idea, shuffled within each
- * idea. An existing key is reused as-is when it covers the same files, so
+ * Assign blind labels to one step's outputs: grouped by idea, shuffled within
+ * each idea. An existing key is reused as-is when it covers the same files, so
  * rebuilding the page doesn't reshuffle labels you've already scored.
  */
-function assignLabels(outDir: string, records: RunRecord[]): KeyEntry[] {
-  const outputs = records.filter((r) => r.step === "code" && r.outputFile);
-  const keyFile = path.join(outDir, "review-key.json");
+function assignLabels(outDir: string, records: RunRecord[], step: Step, keyName: string): KeyEntry[] {
+  const outputs = records.filter((r) => r.step === step && r.outputFile);
+  const keyFile = path.join(outDir, keyName);
   if (existsSync(keyFile)) {
     const existing = JSON.parse(readFileSync(keyFile, "utf8")) as KeyEntry[];
     const files = new Set(outputs.map((r) => r.outputFile));
@@ -591,7 +591,7 @@ function assignLabels(outDir: string, records: RunRecord[]): KeyEntry[] {
 }
 
 function writeReviewPage(outDir: string, records: RunRecord[]) {
-  const key = assignLabels(outDir, records);
+  const key = assignLabels(outDir, records, "code", "review-key.json");
   if (key.length === 0) return;
   // Only what the reviewer needs: no model names, file names, or check results.
   const outputs = key.map((k) => ({
@@ -602,6 +602,24 @@ function writeReviewPage(outDir: string, records: RunRecord[]) {
   }));
   const data = JSON.stringify(outputs).replace(/</g, "\\u003c");
   writeFileSync(path.join(outDir, "review.html"), REVIEW_HTML.replace("__DATA__", () => data));
+}
+
+/**
+ * Blind review page for the specs, with their own labels and key file
+ * (spec-review-key.json), independent of the prototype review's labels.
+ */
+function writeSpecReviewPage(outDir: string, records: RunRecord[]) {
+  const key = assignLabels(outDir, records, "spec", "spec-review-key.json");
+  if (key.length === 0) return;
+  const specs = key.map((k) => {
+    const text = readFileSync(path.join(outDir, k.file), "utf8");
+    // Specs that didn't parse were saved raw (.txt); show those as plain text.
+    return k.file.endsWith(".json")
+      ? { label: k.label, ideaId: k.ideaId, idea: IDEAS[k.ideaId - 1], spec: JSON.parse(text) }
+      : { label: k.label, ideaId: k.ideaId, idea: IDEAS[k.ideaId - 1], raw: text };
+  });
+  const data = JSON.stringify(specs).replace(/</g, "\\u003c");
+  writeFileSync(path.join(outDir, "spec-review.html"), SPEC_REVIEW_HTML.replace("__DATA__", () => data));
 }
 
 const REVIEW_HTML = `<!doctype html>
@@ -746,6 +764,193 @@ function serveReviewPage(outDir: string, port: number) {
   });
 }
 
+const SPEC_REVIEW_HTML = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blind Spec Review</title>
+<style>
+  :root { --bg:#f7f7f5; --panel:#fff; --text:#1d1d1b; --muted:#6b6b66; --line:#e2e1dc; --accent:#3b5bdb; --done:#2f9e44; --chip:#eef0f7; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#161615; --panel:#1f1f1d; --text:#ececea; --muted:#9a9a94; --line:#33332f; --accent:#7b93ff; --done:#51cf66; --chip:#2a2c36; } }
+  * { box-sizing: border-box; }
+  body { margin:0; font:15px/1.55 system-ui, sans-serif; background:var(--bg); color:var(--text); }
+  .app { display:grid; grid-template-columns: 200px 1fr; min-height:100vh; }
+  nav { border-right:1px solid var(--line); padding:16px; background:var(--panel); overflow-y:auto; }
+  nav h1 { font-size:15px; margin:0 0 4px; }
+  nav p { color:var(--muted); font-size:13px; margin:0 0 16px; }
+  nav h2 { font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin:16px 0 6px; }
+  nav button { display:flex; justify-content:space-between; width:100%; padding:6px 10px; margin:2px 0; border:1px solid transparent; border-radius:6px; background:none; color:inherit; font:inherit; cursor:pointer; text-align:left; }
+  nav button:hover { border-color:var(--line); }
+  nav button.active { border-color:var(--accent); }
+  nav .tick { color:var(--done); font-weight:600; }
+  main { padding:24px; min-width:0; display:grid; grid-template-columns: minmax(0, 1fr) 320px; gap:24px; align-items:start; }
+  .idea { color:var(--muted); margin:4px 0 16px; }
+  .spec { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:20px 24px; }
+  .spec h2 { margin:0 0 2px; font-size:22px; }
+  .spec .oneliner { color:var(--muted); margin:0 0 12px; font-size:16px; }
+  .spec h3 { font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin:20px 0 6px; }
+  .spec p { margin:0; }
+  .chips span { display:inline-block; background:var(--chip); border-radius:999px; padding:2px 10px; margin:0 6px 6px 0; font-size:13px; }
+  .spec ol, .spec ul { margin:0; padding-left:22px; }
+  .spec li { margin:3px 0; }
+  .screen { border:1px solid var(--line); border-radius:8px; padding:10px 12px; margin:8px 0; }
+  .screen strong { display:block; }
+  pre.raw { white-space:pre-wrap; margin:0; }
+  aside { position:sticky; top:24px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px 18px; }
+  aside h2 { font-size:15px; margin:0 0 12px; }
+  fieldset { border:0; padding:0; margin:0 0 16px; }
+  legend { font-weight:600; margin-bottom:6px; padding:0; }
+  .opts label { display:inline-flex; align-items:center; gap:4px; margin-right:12px; cursor:pointer; }
+  textarea { width:100%; min-height:90px; padding:8px; border:1px solid var(--line); border-radius:6px; background:var(--bg); color:inherit; font:inherit; }
+  .row { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+  .btn { padding:6px 14px; border-radius:6px; border:1px solid var(--line); background:var(--panel); color:inherit; font:inherit; cursor:pointer; }
+  .btn.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .btn:disabled { opacity:.5; cursor:default; }
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; } aside { position:static; } }
+  @media (max-width: 640px) { .app { grid-template-columns: 1fr; } nav { border-right:0; border-bottom:1px solid var(--line); } main { padding:16px; } .spec { padding:16px; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <nav>
+    <h1>Blind spec review</h1>
+    <p id="progress"></p>
+    <div id="list"></div>
+    <div class="row"><button class="btn" id="export">Export rubric CSV</button></div>
+  </nav>
+  <main>
+    <section>
+      <h1 id="title" style="margin:0"></h1>
+      <p class="idea" id="idea"></p>
+      <article class="spec" id="spec"></article>
+    </section>
+    <aside>
+      <h2>Rubric</h2>
+      <fieldset><legend>Are the screens specific to the idea?</legend><div class="opts" data-q="screens"></div></fieldset>
+      <fieldset><legend>Does the out-of-scope list make sense?</legend><div class="opts" data-q="outOfScope"></div></fieldset>
+      <fieldset><legend>Would you approve it without major edits?</legend><div class="opts" data-q="approve"></div></fieldset>
+      <textarea id="notes" placeholder="Notes"></textarea>
+      <div class="row">
+        <button class="btn" id="prev">Previous</button>
+        <button class="btn primary" id="next">Next</button>
+      </div>
+    </aside>
+  </main>
+</div>
+<script id="specs" type="application/json">__DATA__</script>
+<script>
+const specs = JSON.parse(document.getElementById("specs").textContent);
+const STORE = "blind-spec-review";
+const OPTIONS = { screens: ["Yes", "Partly", "No"], outOfScope: ["Yes", "Partly", "No"], approve: ["Yes", "No"] };
+const QUESTIONS = Object.keys(OPTIONS);
+let answers = {};
+try { answers = JSON.parse(localStorage.getItem(STORE)) || {}; } catch (e) {}
+let index = 0;
+
+function save() { try { localStorage.setItem(STORE, JSON.stringify(answers)); } catch (e) {} }
+function done(label) { const a = answers[label] || {}; return QUESTIONS.every((q) => a[q]); }
+function el(tag, attrs, children) {
+  const node = document.createElement(tag);
+  Object.assign(node, attrs || {});
+  for (const child of [].concat(children || [])) node.append(child);
+  return node;
+}
+function section(title, body) { return [el("h3", { textContent: title }), body]; }
+function text(value) { return value === undefined || value === null || value === "" ? "(not given)" : String(value); }
+function list(tag, items) { return el(tag, {}, (Array.isArray(items) ? items : []).map((item) => el("li", { textContent: text(item) }))); }
+
+function renderSpec(entry) {
+  const box = document.getElementById("spec");
+  box.replaceChildren();
+  if (entry.raw !== undefined) {
+    box.append(el("p", { textContent: "This spec didn't parse as JSON. Raw output:" }), el("pre", { className: "raw", textContent: entry.raw }));
+    return;
+  }
+  const s = entry.spec;
+  const chips = el("div", { className: "chips" }, [
+    el("span", { textContent: "Tone: " + text(s.tone) }),
+    el("span", { textContent: "Platform: " + text(s.platform) }),
+  ]);
+  const screens = el("div", {}, (Array.isArray(s.screens) ? s.screens : []).map((sc) =>
+    el("div", { className: "screen" }, [el("strong", { textContent: text(sc && sc.name) }), el("span", { textContent: text(sc && sc.purpose) })])));
+  box.append(
+    el("h2", { textContent: text(s.productName) }),
+    el("p", { className: "oneliner", textContent: text(s.oneLiner) }),
+    chips,
+    ...section("Problem", el("p", { textContent: text(s.problem) })),
+    ...section("Target user", el("p", { textContent: text(s.targetUser) })),
+    ...section("Core flow", list("ol", s.coreFlow)),
+    ...section("Screens", screens),
+    ...section("Out of scope", list("ul", s.outOfScope)),
+  );
+}
+
+function renderRubric(entry) {
+  const a = answers[entry.label] || {};
+  for (const box of document.querySelectorAll(".opts")) {
+    const q = box.dataset.q;
+    box.replaceChildren(...OPTIONS[q].map((opt) => {
+      const input = el("input", { type: "radio", name: q, checked: a[q] === opt });
+      input.addEventListener("change", () => { update(entry.label, { [q]: opt }); });
+      return el("label", {}, [input, opt]);
+    }));
+  }
+  document.getElementById("notes").value = a.notes || "";
+}
+
+function update(label, patch) {
+  answers[label] = Object.assign({}, answers[label], patch);
+  save();
+  renderNav();
+}
+
+function renderNav() {
+  const listBox = document.getElementById("list");
+  listBox.replaceChildren();
+  let lastIdea = null;
+  specs.forEach((entry, i) => {
+    if (entry.ideaId !== lastIdea) { listBox.append(el("h2", { textContent: "Idea " + entry.ideaId })); lastIdea = entry.ideaId; }
+    const button = el("button", { className: i === index ? "active" : "" }, [
+      "Spec " + entry.label, el("span", { className: "tick", textContent: done(entry.label) ? "✓" : "" })]);
+    button.addEventListener("click", () => go(i));
+    listBox.append(button);
+  });
+  document.getElementById("progress").textContent = specs.filter((s) => done(s.label)).length + " of " + specs.length + " reviewed";
+}
+
+function go(i) {
+  index = i;
+  const entry = specs[index];
+  document.getElementById("title").textContent = "Spec " + entry.label;
+  document.getElementById("idea").textContent = "Idea " + entry.ideaId + ": " + entry.idea;
+  renderSpec(entry);
+  renderRubric(entry);
+  renderNav();
+  document.getElementById("prev").disabled = index === 0;
+  document.getElementById("next").disabled = index === specs.length - 1;
+  window.scrollTo(0, 0);
+}
+
+document.getElementById("notes").addEventListener("input", (e) => update(specs[index].label, { notes: e.target.value }));
+document.getElementById("prev").addEventListener("click", () => go(index - 1));
+document.getElementById("next").addEventListener("click", () => go(index + 1));
+document.getElementById("export").addEventListener("click", () => {
+  const esc = (v) => { const s = v === undefined ? "" : String(v); return /[",\\n\\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+  const rows = ["label,idea_id,screens_specific,out_of_scope_sensible,approve_without_major_edits,notes"].concat(specs.map((entry) => {
+    const a = answers[entry.label] || {};
+    return [entry.label, entry.ideaId, a.screens, a.outOfScope, a.approve, a.notes].map(esc).join(",");
+  }));
+  const link = el("a", { download: "spec-review-scores.csv", href: URL.createObjectURL(new Blob([rows.join("\\n") + "\\n"], { type: "text/csv" })) });
+  link.click();
+});
+
+go(0);
+</script>
+</body>
+</html>
+`;
+
 // ---------------------------------------------------------------------------
 // CLI
 // ---------------------------------------------------------------------------
@@ -792,6 +997,7 @@ async function main() {
   writeCsv(outDir, store.records);
   writeSummary(outDir, store.records);
   writeReviewPage(outDir, store.records);
+  writeSpecReviewPage(outDir, store.records);
   console.log(`Wrote ${path.relative(ROOT, outDir)}/runs.csv (${store.records.length} runs) and summary.csv`);
 }
 
