@@ -7,6 +7,7 @@
  *
  *   npm run compare-models -- --step spec --ideas 1 --runs 1 --out results/smoke   # smoke test
  *   npm run compare-models -- --step all                                           # full run
+ *   npm run compare-models -- --step all --retry-errors                            # re-run only failed or missing runs
  *   npm run compare-models -- --step report                                        # rebuild runs.csv + review.html from runs.json
  *
  * Steps: spec | code | all | report. `code` reads the specs recorded by a
@@ -327,12 +328,22 @@ class RunStore {
 // Steps
 // ---------------------------------------------------------------------------
 
-async function runSpecStep(outDir: string, store: RunStore, ideaIds: number[], runs: number) {
+/** With --retry-errors, only runs that errored or were never recorded are re-run. */
+function shouldRun(store: RunStore, retryErrors: boolean, step: Step, model: string, ideaId: number, run: number) {
+  if (!retryErrors) return true;
+  const existing = store.records.find(
+    (r) => r.step === step && r.model === model && r.ideaId === ideaId && r.run === run
+  );
+  return !existing || existing.error !== null;
+}
+
+async function runSpecStep(outDir: string, store: RunStore, ideaIds: number[], runs: number, retryErrors: boolean) {
   mkdirSync(path.join(outDir, "specs"), { recursive: true });
   for (const ideaId of ideaIds) {
     const prompt = buildSpecPrompt(IDEAS[ideaId - 1]);
     for (const { id: model } of CONFIG.models) {
       for (let run = 1; run <= runs; run++) {
+        if (!shouldRun(store, retryErrors, "spec", model, ideaId, run)) continue;
         const record = blankRecord("spec", model, ideaId, run);
         const base = `specs/idea${ideaId}-${slugFor(model)}-run${run}`;
         try {
@@ -363,23 +374,31 @@ async function runSpecStep(outDir: string, store: RunStore, ideaIds: number[], r
   }
 }
 
-async function runCodeStep(outDir: string, store: RunStore, ideaIds: number[], runs: number) {
+async function runCodeStep(outDir: string, store: RunStore, ideaIds: number[], runs: number, retryErrors: boolean) {
   mkdirSync(path.join(outDir, "code"), { recursive: true });
   for (const ideaId of ideaIds) {
-    const source = store.records
-      .filter((r) => r.step === "spec" && r.model === CONFIG.codeStepSpecModel && r.ideaId === ideaId && r.specValid)
-      .sort((a, b) => a.run - b.run)[0];
-    if (!source?.outputFile) {
+    // Every code run for an idea must share one input spec. When retrying, reuse the
+    // spec the idea's earlier code runs used, even if a retried spec run is now valid.
+    const earlierInput = retryErrors
+      ? store.records.find((r) => r.step === "code" && r.ideaId === ideaId && r.inputSpecFile)?.inputSpecFile
+      : undefined;
+    const inputSpecFile =
+      earlierInput ??
+      store.records
+        .filter((r) => r.step === "spec" && r.model === CONFIG.codeStepSpecModel && r.ideaId === ideaId && r.specValid)
+        .sort((a, b) => a.run - b.run)[0]?.outputFile;
+    if (!inputSpecFile) {
       console.warn(`idea ${ideaId}: no valid ${CONFIG.codeStepSpecModel} spec in ${outDir}, skipping the code step`);
       continue;
     }
-    const spec = JSON.parse(readFileSync(path.join(outDir, source.outputFile), "utf8")) as Spec;
+    const spec = JSON.parse(readFileSync(path.join(outDir, inputSpecFile), "utf8")) as Spec;
     const prompt = buildPrototypePrompt(spec);
 
     for (const { id: model } of CONFIG.models) {
       for (let run = 1; run <= runs; run++) {
+        if (!shouldRun(store, retryErrors, "code", model, ideaId, run)) continue;
         const record = blankRecord("code", model, ideaId, run);
-        record.inputSpecFile = source.outputFile;
+        record.inputSpecFile = inputSpecFile;
         try {
           const result = await callModel(model, prompt, prototypeCall.maxTokens);
           recordCall(record, result);
@@ -716,6 +735,7 @@ async function main() {
       ideas: { type: "string" },
       runs: { type: "string", default: String(CONFIG.runsPerModel) },
       out: { type: "string", default: "results" },
+      "retry-errors": { type: "boolean", default: false },
     },
   });
   const step = values.step!;
@@ -737,8 +757,9 @@ async function main() {
   }
 
   const store = new RunStore(path.join(outDir, "runs.json"));
-  if (step === "spec" || step === "all") await runSpecStep(outDir, store, ideaIds, runs);
-  if (step === "code" || step === "all") await runCodeStep(outDir, store, ideaIds, runs);
+  const retryErrors = values["retry-errors"]!;
+  if (step === "spec" || step === "all") await runSpecStep(outDir, store, ideaIds, runs, retryErrors);
+  if (step === "code" || step === "all") await runCodeStep(outDir, store, ideaIds, runs, retryErrors);
 
   writeCsv(outDir, store.records);
   writeSummary(outDir, store.records);
