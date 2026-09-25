@@ -7,14 +7,17 @@
  *
  *   npm run compare-models -- --step spec --ideas 1 --runs 1 --out results/smoke   # smoke test
  *   npm run compare-models -- --step all                                           # full run
- *   npm run compare-models -- --step all --retry-errors                            # re-run only failed or missing runs
+ *   npm run compare-models -- --step all --models deepseek,gptoss                  # run only some models (id or slug)
+ *   npm run compare-models -- --step list-models                                   # list DeepSeek and Groq models
  *   npm run compare-models -- --step report                                        # rebuild runs.csv + review.html from runs.json
  *   npm run compare-models -- --step serve                                         # open review.html at http://localhost:4173
  *
- * Steps: spec | code | all | report | serve. `code` reads the specs recorded by a
- * previous `spec` run in the same --out directory.
+ * Steps: spec | code | all | report | serve | list-models. `code` reads the specs
+ * recorded by a previous `spec` run in the same --out directory.
+ *
+ * Runs are resumable: runs already recorded without an error are skipped, so an
+ * interrupted run can simply be restarted. Pass --rerun to redo them anyway.
  */
-import Anthropic from "@anthropic-ai/sdk";
 import { transform } from "esbuild";
 import { randomInt } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -23,34 +26,96 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import type { Screen, Spec } from "../lib/types";
+import { callWithRetries, COMPAT_PROVIDERS, listModels, type CallOutcome, type ProviderName } from "./providers";
 
 // ---------------------------------------------------------------------------
 // Config
 // ---------------------------------------------------------------------------
 
-interface ModelConfig {
-  id: string;
-  /** Short name used in file names. The review page never shows it. */
-  slug: string;
-  /** USD per million tokens. Fill in from https://www.anthropic.com/pricing. */
-  pricePerMTok: { input: number | null; output: number | null };
+/** USD per million tokens. null leaves the cost column blank. */
+interface Prices {
+  /** Uncached input (DeepSeek: cache miss). */
+  input: number | null;
+  /** Cached input (DeepSeek: cache hit). null bills cached tokens at the input price. */
+  cachedInput: number | null;
+  output: number | null;
 }
 
-// IDs checked against platform.claude.com/docs/en/about-claude/models/overview on 2026-09-24.
+interface ModelConfig {
+  id: string;
+  provider: ProviderName;
+  /** Short name used in file names and --models. The review pages never show it. */
+  slug: string;
+  /** How the model reasons with the request the harness sends (no reasoning params are set). */
+  reasoningMode: string;
+  pricePerMTok: Prices;
+  /** DeepSeek only: off-peak prices. pricePerMTok is then the peak price. */
+  offPeakPricePerMTok?: Prices;
+}
+
+// Anthropic IDs checked against platform.claude.com/docs/en/about-claude/models/overview on 2026-09-24.
+// DeepSeek and Groq IDs: see `--step list-models`.
 const MODELS: ModelConfig[] = [
-  { id: "claude-sonnet-5", slug: "sonnet", pricePerMTok: { input: 2, output: 10 } },
-  { id: "claude-haiku-4-5-20251001", slug: "haiku", pricePerMTok: { input: 1, output: 5 } },
+  {
+    id: "claude-sonnet-5",
+    provider: "anthropic",
+    slug: "sonnet",
+    reasoningMode: "adaptive thinking (API default, effort high)",
+    pricePerMTok: { input: 2, cachedInput: null, output: 10 },
+  },
+  {
+    id: "claude-haiku-4-5-20251001",
+    provider: "anthropic",
+    slug: "haiku",
+    reasoningMode: "none (API default)",
+    pricePerMTok: { input: 1, cachedInput: null, output: 5 },
+  },
+  {
+    // Served by DeepSeek-V4.1-Flash. Fill in from api-docs.deepseek.com/quick_start/pricing.
+    id: "deepseek-flash",
+    provider: "deepseek",
+    slug: "deepseek",
+    reasoningMode: "thinking (API default, effort high)",
+    pricePerMTok: { input: null, cachedInput: null, output: null },
+    offPeakPricePerMTok: { input: null, cachedInput: null, output: null },
+  },
+  {
+    // Fill in from groq.com/pricing.
+    id: "openai/gpt-oss-120b",
+    provider: "groq",
+    slug: "gptoss",
+    reasoningMode: "reasoning (API default, effort medium)",
+    pricePerMTok: { input: null, cachedInput: null, output: null },
+  },
 ];
+
+/**
+ * DeepSeek's peak window: 01:00-04:00 and 06:00-10:00 UTC, Monday-Friday,
+ * except Chinese public holidays (list those dates here as "YYYY-MM-DD", UTC).
+ * Everything else is off-peak.
+ */
+const DEEPSEEK_PEAK = {
+  weekdaysUtc: [1, 2, 3, 4, 5],
+  hoursUtc: [
+    [1, 4],
+    [6, 10],
+  ],
+  holidays: [] as string[],
+};
 
 const CONFIG = {
   models: MODELS,
+  /** The three-way comparison: what `spec`/`code` run by default and what the -3way review pages show. */
+  comparison: ["claude-sonnet-5", "deepseek-flash", "openai/gpt-oss-120b"],
+  /** The original two-way comparison; review.html and spec-review.html keep showing only these. */
+  original: ["claude-sonnet-5", "claude-haiku-4-5-20251001"],
   runsPerModel: 2,
   /** The code step uses this model's first valid spec per idea as its fixed input. */
   codeStepSpecModel: "claude-sonnet-5",
   /** The idea form's defaults when the user leaves the optional fields blank. */
   specInputs: { platform: "web", mustHaveFeature: "", tone: "" },
-  /** Retries for 429 / 5xx / connection errors. Latency is measured on the successful attempt only. */
-  maxAttempts: 4,
+  /** Latency is measured on the successful attempt only, excluding retries and waits. */
+  retry: { maxErrorRetries: 3, maxRateLimitRetries: 10 },
 };
 
 const IDEAS = [
@@ -74,18 +139,26 @@ const PROTOTYPE_ROUTE = path.join(ROOT, "app/api/generate-prototype/route.ts");
 const ENV_FILE = path.join(ROOT, ".env.local");
 if (existsSync(ENV_FILE)) process.loadEnvFile(ENV_FILE);
 
-/** Explain why no key was found instead of letting every run fail with an auth error. */
-function missingKeyMessage(): string | null {
-  if (process.env.ANTHROPIC_API_KEY?.trim() || process.env.ANTHROPIC_AUTH_TOKEN?.trim()) return null;
+const KEY_ENV: Record<ProviderName, string> = {
+  anthropic: "ANTHROPIC_API_KEY",
+  deepseek: COMPAT_PROVIDERS.deepseek.keyEnv,
+  groq: COMPAT_PROVIDERS.groq.keyEnv,
+};
+
+/** Explain why a provider's key wasn't found instead of letting every run fail with an auth error. */
+function missingKeyMessage(provider: ProviderName): string | null {
+  const name = KEY_ENV[provider];
+  if (process.env[name]?.trim()) return null;
+  if (provider === "anthropic" && process.env.ANTHROPIC_AUTH_TOKEN?.trim()) return null;
   if (!existsSync(ENV_FILE)) {
     const hint = existsSync(`${ENV_FILE}.txt`) ? ` Found ${ENV_FILE}.txt instead; rename it to drop ".txt".` : "";
-    return `ANTHROPIC_API_KEY is not set and ${ENV_FILE} does not exist.${hint}`;
+    return `${name} is not set and ${ENV_FILE} does not exist.${hint}`;
   }
   const bytes = readFileSync(ENV_FILE);
   if ((bytes[0] === 0xff && bytes[1] === 0xfe) || (bytes[0] === 0xfe && bytes[1] === 0xff)) {
     return `${ENV_FILE} is saved as UTF-16, which Node can't read. Re-save it as UTF-8 or ASCII.`;
   }
-  return `${ENV_FILE} exists but has no ANTHROPIC_API_KEY=... line.`;
+  return `${ENV_FILE} exists but has no ${name}=... line.`;
 }
 
 interface RouteCall {
@@ -176,44 +249,25 @@ async function compileError(code: string): Promise<string | null> {
 // API calls
 // ---------------------------------------------------------------------------
 
-// Retries are done here instead of in the SDK so a retried call's latency
-// doesn't include the failed attempts and backoff.
-const client = new Anthropic({ maxRetries: 0 });
-
-interface CallResult {
-  message: Anthropic.Message;
-  latencyMs: number;
-  attempts: number;
+function modelConfig(id: string): ModelConfig {
+  const config = CONFIG.models.find((m) => m.id === id);
+  if (!config) throw new Error(`Unknown model ${id}`);
+  return config;
 }
 
-async function callModel(model: string, prompt: string, maxTokens: number): Promise<CallResult> {
-  for (let attempt = 1; ; attempt++) {
-    const start = performance.now();
-    try {
-      const message = await client.messages.create({
-        model,
-        max_tokens: maxTokens,
-        messages: [{ role: "user", content: prompt }],
-      });
-      return { message, latencyMs: Math.round(performance.now() - start), attempts: attempt };
-    } catch (error) {
-      const retryable =
-        error instanceof Anthropic.RateLimitError ||
-        error instanceof Anthropic.InternalServerError ||
-        error instanceof Anthropic.APIConnectionError;
-      if (!retryable || attempt >= CONFIG.maxAttempts) throw error;
-      const waitMs = 2 ** attempt * 1000;
-      console.warn(`  ${model}: ${(error as Error).message} (retrying in ${waitMs / 1000}s)`);
-      await new Promise((resolve) => setTimeout(resolve, waitMs));
-    }
-  }
+function callModel(model: ModelConfig, prompt: string, maxTokens: number): Promise<CallOutcome> {
+  return callWithRetries(model.provider, model.id, prompt, maxTokens, CONFIG.retry, (message) => console.warn(message));
 }
 
-function textOf(message: Anthropic.Message): string {
-  return message.content
-    .filter((block): block is Anthropic.TextBlock => block.type === "text")
-    .map((block) => block.text)
-    .join("");
+/** "peak" or "off-peak" for DeepSeek's time-based pricing; null for other providers. */
+function pricingWindow(provider: ProviderName, at: Date): string | null {
+  if (provider !== "deepseek") return null;
+  const hour = at.getUTCHours() + at.getUTCMinutes() / 60;
+  const peak =
+    DEEPSEEK_PEAK.weekdaysUtc.includes(at.getUTCDay()) &&
+    !DEEPSEEK_PEAK.holidays.includes(at.toISOString().slice(0, 10)) &&
+    DEEPSEEK_PEAK.hoursUtc.some(([from, to]) => hour >= from && hour < to);
+  return peak ? "peak" : "off-peak";
 }
 
 // ---------------------------------------------------------------------------
@@ -226,15 +280,23 @@ const STEP_ORDER: Step[] = ["spec", "code"];
 interface RunRecord {
   step: Step;
   model: string;
+  provider: ProviderName;
+  reasoningMode: string;
   ideaId: number;
   idea: string;
   run: number;
   latencyMs: number | null;
+  /** Time to first streamed token (reasoning or text); null for runs made without streaming. */
+  ttftMs: number | null;
   inputTokens: number | null;
+  cachedInputTokens: number | null;
+  /** Includes reasoning tokens where the provider bills them as output. */
   outputTokens: number | null;
+  /** Only where the API reports them separately (DeepSeek, Groq). */
+  reasoningTokens: number | null;
   /** From the API response; null only when the call itself failed. */
   stopReason: string | null;
-  /** stop_reason === "max_tokens". A truncated run fails its step's check even if the partial output passes. */
+  /** stop_reason max_tokens (Anthropic) or finish_reason length (DeepSeek, Groq). Truncated runs fail their step's check. */
   truncated: boolean | null;
   /** Content block types in order, e.g. "text" or "thinking+text". The live app reads content[0] only. */
   contentBlocks: string | null;
@@ -250,24 +312,36 @@ interface RunRecord {
   /** Code step pass: has a default export, compiles, and not truncated. */
   codeValid: boolean | null;
   attempts: number | null;
+  /** Retries before the successful attempt (errors and rate limits). */
+  retries: number | null;
+  /** Time spent waiting on rate limits; not part of latencyMs. */
+  rateLimitWaitMs: number | null;
+  /** DeepSeek only: "peak" or "off-peak" when the successful attempt started. */
+  pricingWindow: string | null;
   error: string | null;
   /** Relative to the results directory. */
   outputFile: string | null;
   /** Code step only: the spec file used as input. */
   inputSpecFile: string | null;
+  /** UTC. Start of the successful attempt (older runs: when the run finished). */
   timestamp: string;
 }
 
-function blankRecord(step: Step, model: string, ideaId: number, run: number): RunRecord {
+function blankRecord(step: Step, model: ModelConfig, ideaId: number, run: number): RunRecord {
   return {
     step,
-    model,
+    model: model.id,
+    provider: model.provider,
+    reasoningMode: model.reasoningMode,
     ideaId,
     idea: IDEAS[ideaId - 1],
     run,
     latencyMs: null,
+    ttftMs: null,
     inputTokens: null,
+    cachedInputTokens: null,
     outputTokens: null,
+    reasoningTokens: null,
     stopReason: null,
     truncated: null,
     contentBlocks: null,
@@ -278,6 +352,9 @@ function blankRecord(step: Step, model: string, ideaId: number, run: number): Ru
     compileError: null,
     codeValid: null,
     attempts: null,
+    retries: null,
+    rateLimitWaitMs: null,
+    pricingWindow: null,
     error: null,
     outputFile: null,
     inputSpecFile: null,
@@ -285,26 +362,41 @@ function blankRecord(step: Step, model: string, ideaId: number, run: number): Ru
   };
 }
 
-function recordCall(record: RunRecord, { message, latencyMs, attempts }: CallResult) {
-  record.latencyMs = latencyMs;
-  record.inputTokens = message.usage.input_tokens;
-  record.outputTokens = message.usage.output_tokens;
-  record.stopReason = message.stop_reason;
-  record.truncated = message.stop_reason === "max_tokens";
-  record.contentBlocks = message.content.map((block) => block.type).join("+");
-  record.attempts = attempts;
+function recordCall(record: RunRecord, outcome: CallOutcome) {
+  record.latencyMs = outcome.latencyMs;
+  record.ttftMs = outcome.ttftMs;
+  record.inputTokens = outcome.inputTokens;
+  record.cachedInputTokens = outcome.cachedInputTokens;
+  record.outputTokens = outcome.outputTokens;
+  record.reasoningTokens = outcome.reasoningTokens;
+  record.stopReason = outcome.stopReason;
+  record.truncated = outcome.truncated;
+  record.contentBlocks = outcome.contentBlocks;
+  record.retries = outcome.retries;
+  record.attempts = outcome.retries + 1;
+  record.rateLimitWaitMs = outcome.rateLimitWaitMs;
+  record.timestamp = outcome.startedAt.toISOString();
+  record.pricingWindow = pricingWindow(record.provider, outcome.startedAt);
 }
 
-function slugFor(model: string): string {
-  return CONFIG.models.find((m) => m.id === model)?.slug ?? model;
-}
-
-/** Fill in truncated/codeValid for runs recorded before those fields existed. */
-function backfillTruncation(r: RunRecord) {
-  if (r.truncated !== undefined) return;
-  r.truncated = r.stopReason === null ? null : r.stopReason === "max_tokens";
-  if (r.truncated && r.specValid) r.specValid = false;
-  r.codeValid = r.hasDefaultExport === null ? null : Boolean(r.hasDefaultExport && r.compiles && !r.truncated);
+/** Fill in fields for runs recorded before they existed. */
+function backfill(r: RunRecord) {
+  if (r.truncated === undefined) {
+    r.truncated = r.stopReason === null ? null : r.stopReason === "max_tokens";
+    if (r.truncated && r.specValid) r.specValid = false;
+    r.codeValid = r.hasDefaultExport === null ? null : Boolean(r.hasDefaultExport && r.compiles && !r.truncated);
+  }
+  if (r.provider === undefined) {
+    const config = CONFIG.models.find((m) => m.id === r.model);
+    r.provider = config?.provider ?? "anthropic";
+    r.reasoningMode = config?.reasoningMode ?? "";
+    r.retries = r.attempts === null ? null : r.attempts - 1;
+    r.rateLimitWaitMs = r.attempts === null ? null : 0;
+    r.ttftMs = null;
+    r.cachedInputTokens = null;
+    r.reasoningTokens = null;
+    r.pricingWindow = null;
+  }
 }
 
 class RunStore {
@@ -312,7 +404,7 @@ class RunStore {
 
   constructor(private readonly file: string) {
     this.records = existsSync(file) ? JSON.parse(readFileSync(file, "utf8")) : [];
-    for (const r of this.records) backfillTruncation(r);
+    for (const r of this.records) backfill(r);
   }
 
   /** Replace any earlier record for the same step/model/idea/run, then persist. */
@@ -330,28 +422,36 @@ class RunStore {
 // Steps
 // ---------------------------------------------------------------------------
 
-/** With --retry-errors, only runs that errored or were never recorded are re-run. */
-function shouldRun(store: RunStore, retryErrors: boolean, step: Step, model: string, ideaId: number, run: number) {
-  if (!retryErrors) return true;
+interface StepOptions {
+  models: ModelConfig[];
+  ideaIds: number[];
+  runs: number;
+  /** Redo runs that already completed. By default they're skipped, which makes reruns resume. */
+  rerun: boolean;
+}
+
+/** Runs are skipped once recorded without an error, unless --rerun. */
+function shouldRun(store: RunStore, rerun: boolean, step: Step, model: string, ideaId: number, run: number) {
+  if (rerun) return true;
   const existing = store.records.find(
     (r) => r.step === step && r.model === model && r.ideaId === ideaId && r.run === run
   );
   return !existing || existing.error !== null;
 }
 
-async function runSpecStep(outDir: string, store: RunStore, ideaIds: number[], runs: number, retryErrors: boolean) {
+async function runSpecStep(outDir: string, store: RunStore, { models, ideaIds, runs, rerun }: StepOptions) {
   mkdirSync(path.join(outDir, "specs"), { recursive: true });
   for (const ideaId of ideaIds) {
     const prompt = buildSpecPrompt(IDEAS[ideaId - 1]);
-    for (const { id: model } of CONFIG.models) {
+    for (const model of models) {
       for (let run = 1; run <= runs; run++) {
-        if (!shouldRun(store, retryErrors, "spec", model, ideaId, run)) continue;
+        if (!shouldRun(store, rerun, "spec", model.id, ideaId, run)) continue;
         const record = blankRecord("spec", model, ideaId, run);
-        const base = `specs/idea${ideaId}-${slugFor(model)}-run${run}`;
+        const base = `specs/idea${ideaId}-${model.slug}-run${run}`;
         try {
           const result = await callModel(model, prompt, specCall.maxTokens);
           recordCall(record, result);
-          const raw = textOf(result.message);
+          const raw = result.text;
           let parsed: unknown;
           try {
             parsed = JSON.parse(stripJsonFences(raw));
@@ -376,14 +476,14 @@ async function runSpecStep(outDir: string, store: RunStore, ideaIds: number[], r
   }
 }
 
-async function runCodeStep(outDir: string, store: RunStore, ideaIds: number[], runs: number, retryErrors: boolean) {
+async function runCodeStep(outDir: string, store: RunStore, { models, ideaIds, runs, rerun }: StepOptions) {
   mkdirSync(path.join(outDir, "code"), { recursive: true });
   for (const ideaId of ideaIds) {
-    // Every code run for an idea must share one input spec. When retrying, reuse the
-    // spec the idea's earlier code runs used, even if a retried spec run is now valid.
-    const earlierInput = retryErrors
-      ? store.records.find((r) => r.step === "code" && r.ideaId === ideaId && r.inputSpecFile)?.inputSpecFile
-      : undefined;
+    // Every code run for an idea, for every model, shares one input spec: the one the
+    // idea's earlier code runs used, even if a later spec run is also valid.
+    const earlierInput = store.records.find(
+      (r) => r.step === "code" && r.ideaId === ideaId && r.inputSpecFile
+    )?.inputSpecFile;
     const inputSpecFile =
       earlierInput ??
       store.records
@@ -396,21 +496,21 @@ async function runCodeStep(outDir: string, store: RunStore, ideaIds: number[], r
     const spec = JSON.parse(readFileSync(path.join(outDir, inputSpecFile), "utf8")) as Spec;
     const prompt = buildPrototypePrompt(spec);
 
-    for (const { id: model } of CONFIG.models) {
+    for (const model of models) {
       for (let run = 1; run <= runs; run++) {
-        if (!shouldRun(store, retryErrors, "code", model, ideaId, run)) continue;
+        if (!shouldRun(store, rerun, "code", model.id, ideaId, run)) continue;
         const record = blankRecord("code", model, ideaId, run);
         record.inputSpecFile = inputSpecFile;
         try {
           const result = await callModel(model, prompt, prototypeCall.maxTokens);
           recordCall(record, result);
-          const code = stripCodeFences(textOf(result.message));
+          const code = stripCodeFences(result.text);
           record.hasDefaultExport = code.includes("export default");
           record.compileError = await compileError(code);
           record.compiles = record.compileError === null;
           record.codeValid = record.hasDefaultExport && record.compiles && !record.truncated;
           // Saved even when truncated or broken, so partial output can be inspected.
-          record.outputFile = `code/idea${ideaId}-${slugFor(model)}-run${run}.jsx`;
+          record.outputFile = `code/idea${ideaId}-${model.slug}-run${run}.jsx`;
           writeFileSync(path.join(outDir, record.outputFile), code + "\n");
         } catch (error) {
           record.error = (error as Error).message;
@@ -429,8 +529,10 @@ function logRecord(r: RunRecord) {
       ? `parsed=${r.jsonParsed} valid=${r.specValid}`
       : `export=${r.hasDefaultExport} compiles=${r.compiles} valid=${r.codeValid}`;
   console.log(
-    `${r.step} idea${r.ideaId} ${r.model} run${r.run}: ${r.latencyMs ?? "-"}ms ` +
-      `in=${r.inputTokens ?? "-"} out=${r.outputTokens ?? "-"} stop=${r.stopReason ?? "-"} ` +
+    `${r.step} idea${r.ideaId} ${r.model} run${r.run}: ${r.latencyMs ?? "-"}ms ttft=${r.ttftMs ?? "-"}ms ` +
+      `in=${r.inputTokens ?? "-"} cached=${r.cachedInputTokens ?? "-"} out=${r.outputTokens ?? "-"} ` +
+      `reasoning=${r.reasoningTokens ?? "-"} retries=${r.retries ?? "-"} stop=${r.stopReason ?? "-"} ` +
+      `${r.pricingWindow ? `window=${r.pricingWindow} ` : ""}` +
       `${r.truncated ? "TRUNCATED " : ""}` +
       `blocks=${r.contentBlocks ?? "-"} ${status}`
   );
@@ -441,22 +543,34 @@ function logRecord(r: RunRecord) {
 // ---------------------------------------------------------------------------
 
 function costUsd(r: RunRecord): number | null {
-  const prices = CONFIG.models.find((m) => m.id === r.model)?.pricePerMTok;
-  if (!prices || prices.input === null || prices.output === null) return null;
-  if (r.inputTokens === null || r.outputTokens === null) return null;
-  return (r.inputTokens * prices.input + r.outputTokens * prices.output) / 1_000_000;
+  const config = CONFIG.models.find((m) => m.id === r.model);
+  if (!config || r.inputTokens === null || r.outputTokens === null) return null;
+  const prices =
+    r.pricingWindow === "off-peak" && config.offPeakPricePerMTok ? config.offPeakPricePerMTok : config.pricePerMTok;
+  if (prices.input === null || prices.output === null) return null;
+  // Output tokens already include reasoning tokens for every provider here.
+  const cached = r.cachedInputTokens ?? 0;
+  const cachedPrice = prices.cachedInput ?? prices.input;
+  return ((r.inputTokens - cached) * prices.input + cached * cachedPrice + r.outputTokens * prices.output) / 1_000_000;
 }
 
 function writeCsv(outDir: string, records: RunRecord[]) {
   const columns: [string, (r: RunRecord) => unknown][] = [
     ["step", (r) => r.step],
+    ["provider", (r) => r.provider],
     ["model", (r) => r.model],
+    ["reasoning_mode", (r) => r.reasoningMode],
     ["idea_id", (r) => r.ideaId],
     ["idea", (r) => r.idea],
     ["run", (r) => r.run],
+    ["timestamp_utc", (r) => r.timestamp],
     ["latency_ms", (r) => r.latencyMs],
+    ["ttft_ms", (r) => r.ttftMs],
     ["input_tokens", (r) => r.inputTokens],
+    ["cached_input_tokens", (r) => r.cachedInputTokens],
     ["output_tokens", (r) => r.outputTokens],
+    ["reasoning_tokens", (r) => r.reasoningTokens],
+    ["pricing_window", (r) => r.pricingWindow],
     ["cost_usd", (r) => costUsd(r)?.toFixed(6)],
     ["stop_reason", (r) => r.stopReason],
     ["truncated", (r) => r.truncated],
@@ -467,11 +581,11 @@ function writeCsv(outDir: string, records: RunRecord[]) {
     ["compiles", (r) => r.compiles],
     ["compile_error", (r) => r.compileError],
     ["code_valid", (r) => r.codeValid],
-    ["attempts", (r) => r.attempts],
+    ["retries", (r) => r.retries],
+    ["rate_limit_wait_ms", (r) => r.rateLimitWaitMs],
     ["error", (r) => r.error],
     ["output_file", (r) => r.outputFile],
     ["input_spec_file", (r) => r.inputSpecFile],
-    ["timestamp", (r) => r.timestamp],
   ];
   const lines = [
     columns.map(([name]) => name).join(","),
@@ -561,8 +675,18 @@ function labelFor(index: number): string {
  * each idea. An existing key is reused as-is when it covers the same files, so
  * rebuilding the page doesn't reshuffle labels you've already scored.
  */
-function assignLabels(outDir: string, records: RunRecord[], step: Step, keyName: string): KeyEntry[] {
-  const outputs = records.filter((r) => r.step === step && r.outputFile);
+function assignLabels(
+  outDir: string,
+  records: RunRecord[],
+  step: Step,
+  models: string[],
+  keyName: string
+): KeyEntry[] {
+  const candidates = records.filter((r) => r.step === step && r.outputFile && models.includes(r.model));
+  // Only ideas every model has outputs for, so a partial run doesn't produce a lopsided page.
+  const outputs = candidates.filter((r) =>
+    models.every((m) => candidates.some((c) => c.model === m && c.ideaId === r.ideaId))
+  );
   const keyFile = path.join(outDir, keyName);
   if (existsSync(keyFile)) {
     const existing = JSON.parse(readFileSync(keyFile, "utf8")) as KeyEntry[];
@@ -590,8 +714,52 @@ function assignLabels(outDir: string, records: RunRecord[], step: Step, keyName:
   return key;
 }
 
-function writeReviewPage(outDir: string, records: RunRecord[]) {
-  const key = assignLabels(outDir, records, "code", "review-key.json");
+/** A blind review page, its key file, and which models it mixes. */
+interface ReviewPage {
+  html: string;
+  key: string;
+  models: string[];
+  /** Browser storage key for the reviewer's answers; distinct per page so labels don't collide. */
+  storage: string;
+  title: string;
+}
+
+const PROTOTYPE_PAGES: ReviewPage[] = [
+  { html: "review.html", key: "review-key.json", models: CONFIG.original, storage: "blind-review-scores", title: "Blind review" },
+  {
+    html: "review-3way.html",
+    key: "review-3way-key.json",
+    models: CONFIG.comparison,
+    storage: "blind-review-scores-3way",
+    title: "Blind review (3 models)",
+  },
+];
+const SPEC_PAGES: ReviewPage[] = [
+  {
+    html: "spec-review.html",
+    key: "spec-review-key.json",
+    models: CONFIG.original,
+    storage: "blind-spec-review",
+    title: "Blind spec review",
+  },
+  {
+    html: "spec-review-3way.html",
+    key: "spec-review-3way-key.json",
+    models: CONFIG.comparison,
+    storage: "blind-spec-review-3way",
+    title: "Blind spec review (3 models)",
+  },
+];
+
+function fillTemplate(template: string, page: ReviewPage, data: string): string {
+  return template
+    .replace("__STORAGE__", () => page.storage)
+    .replace(/__TITLE__/g, () => page.title)
+    .replace("__DATA__", () => data);
+}
+
+function writeReviewPage(outDir: string, records: RunRecord[], page: ReviewPage) {
+  const key = assignLabels(outDir, records, "code", page.models, page.key);
   if (key.length === 0) return;
   // Only what the reviewer needs: no model names, file names, or check results.
   const outputs = key.map((k) => ({
@@ -601,15 +769,15 @@ function writeReviewPage(outDir: string, records: RunRecord[]) {
     code: readFileSync(path.join(outDir, k.file), "utf8"),
   }));
   const data = JSON.stringify(outputs).replace(/</g, "\\u003c");
-  writeFileSync(path.join(outDir, "review.html"), REVIEW_HTML.replace("__DATA__", () => data));
+  writeFileSync(path.join(outDir, page.html), fillTemplate(REVIEW_HTML, page, data));
 }
 
 /**
  * Blind review page for the specs, with their own labels and key file
  * (spec-review-key.json), independent of the prototype review's labels.
  */
-function writeSpecReviewPage(outDir: string, records: RunRecord[]) {
-  const key = assignLabels(outDir, records, "spec", "spec-review-key.json");
+function writeSpecReviewPage(outDir: string, records: RunRecord[], page: ReviewPage) {
+  const key = assignLabels(outDir, records, "spec", page.models, page.key);
   if (key.length === 0) return;
   const specs = key.map((k) => {
     const text = readFileSync(path.join(outDir, k.file), "utf8");
@@ -619,7 +787,7 @@ function writeSpecReviewPage(outDir: string, records: RunRecord[]) {
       : { label: k.label, ideaId: k.ideaId, idea: IDEAS[k.ideaId - 1], raw: text };
   });
   const data = JSON.stringify(specs).replace(/</g, "\\u003c");
-  writeFileSync(path.join(outDir, "spec-review.html"), SPEC_REVIEW_HTML.replace("__DATA__", () => data));
+  writeFileSync(path.join(outDir, page.html), fillTemplate(SPEC_REVIEW_HTML, page, data));
 }
 
 const REVIEW_HTML = `<!doctype html>
@@ -671,7 +839,7 @@ import { SandpackProvider, SandpackLayout, SandpackPreview, SandpackCodeViewer }
 
 const h = React.createElement;
 const outputs = JSON.parse(document.getElementById("outputs").textContent);
-const STORE = "blind-review-scores";
+const STORE = "__STORAGE__";
 
 function loadScores() {
   try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch { return {}; }
@@ -704,7 +872,7 @@ function App() {
 
   return h("div", { className: "app" },
     h("nav", null,
-      h("h1", null, "Blind review"),
+      h("h1", null, "__TITLE__"),
       h("p", null, Object.values(scores).filter((s) => s.score).length + " of " + outputs.length + " scored"),
       ideaIds.map((id) => h(React.Fragment, { key: id },
         h("h2", null, "Idea " + id),
@@ -750,17 +918,19 @@ createRoot(document.getElementById("root")).render(h(App));
  * key file and outputs stay off the server.
  */
 function serveReviewPage(outDir: string, port: number) {
-  const page = path.join(outDir, "review.html");
-  if (!existsSync(page)) throw new Error(`${page} doesn't exist yet; run the code step first.`);
+  const pages = PROTOTYPE_PAGES.map((p) => p.html).filter((name) => existsSync(path.join(outDir, name)));
+  if (pages.length === 0) throw new Error(`No review pages in ${outDir} yet; run the code step first.`);
   createServer((req, res) => {
-    if (req.url !== "/" && req.url !== "/review.html") {
+    const name = req.url === "/" ? pages[0] : req.url?.slice(1);
+    if (!name || !pages.includes(name)) {
       res.writeHead(404).end();
       return;
     }
     res.writeHead(200, { "content-type": "text/html; charset=utf-8" });
-    res.end(readFileSync(page));
+    res.end(readFileSync(path.join(outDir, name)));
   }).listen(port, "127.0.0.1", () => {
-    console.log(`Blind review page: http://localhost:${port}/  (Ctrl+C to stop)`);
+    for (const name of pages) console.log(`Blind review page: http://localhost:${port}/${name}`);
+    console.log("(Ctrl+C to stop)");
   });
 }
 
@@ -814,7 +984,7 @@ const SPEC_REVIEW_HTML = `<!doctype html>
 <body>
 <div class="app">
   <nav>
-    <h1>Blind spec review</h1>
+    <h1>__TITLE__</h1>
     <p id="progress"></p>
     <div id="list"></div>
     <div class="row"><button class="btn" id="export">Export rubric CSV</button></div>
@@ -841,7 +1011,7 @@ const SPEC_REVIEW_HTML = `<!doctype html>
 <script id="specs" type="application/json">__DATA__</script>
 <script>
 const specs = JSON.parse(document.getElementById("specs").textContent);
-const STORE = "blind-spec-review";
+const STORE = "__STORAGE__";
 const OPTIONS = { screens: ["Yes", "Partly", "No"], outOfScope: ["Yes", "Partly", "No"], approve: ["Yes", "No"] };
 const QUESTIONS = Object.keys(OPTIONS);
 let answers = {};
@@ -962,14 +1132,24 @@ async function main() {
       ideas: { type: "string" },
       runs: { type: "string", default: String(CONFIG.runsPerModel) },
       out: { type: "string", default: "results" },
+      models: { type: "string" },
+      rerun: { type: "boolean", default: false },
+      // Kept for older instructions: skipping completed runs is now the default.
       "retry-errors": { type: "boolean", default: false },
       port: { type: "string", default: "4173" },
     },
   });
   const step = values.step!;
-  if (!["spec", "code", "all", "report", "serve"].includes(step)) {
-    throw new Error(`--step must be spec, code, all, report, or serve (got ${step})`);
+  if (!["spec", "code", "all", "report", "serve", "list-models"].includes(step)) {
+    throw new Error(`--step must be spec, code, all, report, serve, or list-models (got ${step})`);
   }
+  const models = values.models
+    ? values.models.split(",").map((name) => {
+        const model = CONFIG.models.find((m) => m.id === name.trim() || m.slug === name.trim());
+        if (!model) throw new Error(`Unknown model "${name}". Known: ${CONFIG.models.map((m) => m.slug).join(", ")}`);
+        return model;
+      })
+    : CONFIG.comparison.map(modelConfig);
   const ideaIds = values.ideas ? values.ideas.split(",").map(Number) : IDEAS.map((_, i) => i + 1);
   if (ideaIds.some((id) => !Number.isInteger(id) || id < 1 || id > IDEAS.length)) {
     throw new Error(`--ideas must be a comma-separated list of 1-${IDEAS.length}`);
@@ -982,23 +1162,62 @@ async function main() {
     serveReviewPage(outDir, Number(values.port));
     return;
   }
-
-  const keyProblem = step === "report" ? null : missingKeyMessage();
-  if (keyProblem) {
-    console.error(keyProblem);
-    process.exit(1);
+  if (step === "list-models") {
+    await printModelLists();
+    return;
   }
 
   const store = new RunStore(path.join(outDir, "runs.json"));
-  const retryErrors = values["retry-errors"]!;
-  if (step === "spec" || step === "all") await runSpecStep(outDir, store, ideaIds, runs, retryErrors);
-  if (step === "code" || step === "all") await runCodeStep(outDir, store, ideaIds, runs, retryErrors);
+  const options: StepOptions = { models, ideaIds, runs, rerun: values.rerun! };
+
+  // Only providers with runs still to do need a key; completed runs are skipped.
+  const steps: Step[] = step === "all" ? ["spec", "code"] : step === "report" ? [] : [step as Step];
+  const pending = models.filter((m) =>
+    steps.some((st) =>
+      ideaIds.some((ideaId) =>
+        Array.from({ length: runs }, (_, i) => i + 1).some((run) => shouldRun(store, options.rerun, st, m.id, ideaId, run))
+      )
+    )
+  );
+  for (const provider of new Set(pending.map((m) => m.provider))) {
+    const problem = missingKeyMessage(provider);
+    if (problem) {
+      console.error(problem);
+      process.exit(1);
+    }
+  }
+
+  if (step === "spec" || step === "all") await runSpecStep(outDir, store, options);
+  if (step === "code" || step === "all") await runCodeStep(outDir, store, options);
 
   writeCsv(outDir, store.records);
   writeSummary(outDir, store.records);
-  writeReviewPage(outDir, store.records);
-  writeSpecReviewPage(outDir, store.records);
+  for (const page of PROTOTYPE_PAGES) writeReviewPage(outDir, store.records, page);
+  for (const page of SPEC_PAGES) writeSpecReviewPage(outDir, store.records, page);
   console.log(`Wrote ${path.relative(ROOT, outDir)}/runs.csv (${store.records.length} runs) and summary.csv`);
+}
+
+/** Print each provider's model list, marking the configured models. */
+async function printModelLists() {
+  for (const provider of ["deepseek", "groq"] as const) {
+    const problem = missingKeyMessage(provider);
+    if (problem) {
+      console.log(`${provider}: skipped (${problem})\n`);
+      continue;
+    }
+    const configured = CONFIG.models.filter((m) => m.provider === provider).map((m) => m.id);
+    const list = await listModels(provider);
+    console.log(`${provider}: ${list.length} models`);
+    for (const m of list.sort((a, b) => String(a.id).localeCompare(String(b.id)))) {
+      const extras = ["active", "context_window", "owned_by"]
+        .filter((field) => m[field] !== undefined)
+        .map((field) => `${field}=${m[field]}`)
+        .join(" ");
+      console.log(`  ${configured.includes(String(m.id)) ? "*" : " "} ${m.id}  ${extras}`);
+    }
+    const missing = configured.filter((id) => !list.some((m) => m.id === id));
+    console.log(missing.length ? `  configured but NOT listed: ${missing.join(", ")}\n` : "  (* = configured)\n");
+  }
 }
 
 main().catch((error) => {
