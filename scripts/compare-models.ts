@@ -107,7 +107,10 @@ const CONFIG = {
   models: MODELS,
   /** The three-way comparison: what `spec`/`code` run by default and what the -3way review pages show. */
   comparison: ["claude-sonnet-5", "deepseek-flash", "openai/gpt-oss-120b"],
-  /** The original two-way comparison; review.html and spec-review.html keep showing only these. */
+  /**
+   * The original two-way comparison; review.html and spec-review.html keep showing only these.
+   * runs.csv and summary.csv cover only `comparison`, so Haiku's runs stay in runs.json but not the reports.
+   */
   original: ["claude-sonnet-5", "claude-haiku-4-5-20251001"],
   runsPerModel: 2,
   /** The code step uses this model's first valid spec per idea as its fixed input. */
@@ -626,7 +629,7 @@ function writeSummary(outDir: string, records: RunRecord[]) {
   const header = ["step", "model", "runs", "api_errors", "truncated", "check", "passed", "pass_rate"];
   const rows: string[][] = [];
   for (const step of STEP_ORDER) {
-    for (const { id: model } of CONFIG.models) {
+    for (const model of CONFIG.comparison) {
       const group = records.filter((r) => r.step === step && r.model === model);
       if (group.length === 0) continue;
       const errors = group.filter((r) => r.error).length;
@@ -687,6 +690,7 @@ function assignLabels(
   const outputs = candidates.filter((r) =>
     models.every((m) => candidates.some((c) => c.model === m && c.ideaId === r.ideaId))
   );
+  if (outputs.length === 0) return [];
   const keyFile = path.join(outDir, keyName);
   if (existsSync(keyFile)) {
     const existing = JSON.parse(readFileSync(keyFile, "utf8")) as KeyEntry[];
@@ -1190,11 +1194,12 @@ async function main() {
   if (step === "spec" || step === "all") await runSpecStep(outDir, store, options);
   if (step === "code" || step === "all") await runCodeStep(outDir, store, options);
 
-  writeCsv(outDir, store.records);
-  writeSummary(outDir, store.records);
+  const reported = store.records.filter((r) => CONFIG.comparison.includes(r.model));
+  writeCsv(outDir, reported);
+  writeSummary(outDir, reported);
   for (const page of PROTOTYPE_PAGES) writeReviewPage(outDir, store.records, page);
   for (const page of SPEC_PAGES) writeSpecReviewPage(outDir, store.records, page);
-  console.log(`Wrote ${path.relative(ROOT, outDir)}/runs.csv (${store.records.length} runs) and summary.csv`);
+  console.log(`Wrote ${path.relative(ROOT, outDir)}/runs.csv (${reported.length} runs) and summary.csv`);
 }
 
 /** Print each provider's model list, marking the configured models. */
