@@ -9,10 +9,11 @@
  *   npm run compare-models -- --step all                                           # full run
  *   npm run compare-models -- --step all --models deepseek,gptoss                  # run only some models (id or slug)
  *   npm run compare-models -- --step list-models                                   # list DeepSeek and Groq models
+ *   npm run compare-models -- --step retry-failed                                  # re-request each failed code output once
  *   npm run compare-models -- --step report                                        # rebuild runs.csv + review.html from runs.json
  *   npm run compare-models -- --step serve                                         # open review.html at http://localhost:4173
  *
- * Steps: spec | code | all | report | serve | list-models. `code` reads the specs
+ * Steps: spec | code | all | report | serve | list-models | retry-failed. `code` reads the specs
  * recorded by a previous `spec` run in the same --out directory.
  *
  * Runs are resumable: runs already recorded without an error are skipped, so an
@@ -305,8 +306,13 @@ function pricingWindow(provider: ProviderName, at: Date): string | null {
 // Run records
 // ---------------------------------------------------------------------------
 
-type Step = "spec" | "code";
-const STEP_ORDER: Step[] = ["spec", "code"];
+/**
+ * "code-retry" is a second request for a code run that failed its checks (same model,
+ * prompt and limits), simulating an app that retries once. The original run keeps
+ * its result; retries never appear on the blind review pages.
+ */
+type Step = "spec" | "code" | "code-retry";
+const STEP_ORDER: Step[] = ["spec", "code", "code-retry"];
 
 interface RunRecord {
   step: Step;
@@ -524,32 +530,66 @@ async function runCodeStep(outDir: string, store: RunStore, { models, ideaIds, r
       console.warn(`idea ${ideaId}: no valid ${CONFIG.codeStepSpecModel} spec in ${outDir}, skipping the code step`);
       continue;
     }
-    const spec = JSON.parse(readFileSync(path.join(outDir, inputSpecFile), "utf8")) as Spec;
-    const prompt = buildPrototypePrompt(spec);
-
     for (const model of models) {
       for (let run = 1; run <= runs; run++) {
         if (!shouldRun(store, rerun, "code", model.id, ideaId, run)) continue;
-        const record = blankRecord("code", model, ideaId, run);
-        record.inputSpecFile = inputSpecFile;
-        try {
-          const result = await callModel(model, prompt, prototypeCall.maxTokens);
-          recordCall(record, result);
-          const code = stripCodeFences(result.text);
-          record.hasDefaultExport = code.includes("export default");
-          record.compileError = await compileError(code);
-          record.compiles = record.compileError === null;
-          record.codeValid = record.hasDefaultExport && record.compiles && !record.truncated;
-          // Saved even when truncated or broken, so partial output can be inspected.
-          record.outputFile = `code/idea${ideaId}-${model.slug}-run${run}.jsx`;
-          writeFileSync(path.join(outDir, record.outputFile), code + "\n");
-        } catch (error) {
-          record.error = (error as Error).message;
-        }
-        store.put(record);
-        logRecord(record);
+        await generateCode(outDir, store, "code", model, ideaId, run, inputSpecFile);
       }
     }
+  }
+}
+
+/** One prototype request plus its checks; used by the code step and by retries. */
+async function generateCode(
+  outDir: string,
+  store: RunStore,
+  step: "code" | "code-retry",
+  model: ModelConfig,
+  ideaId: number,
+  run: number,
+  inputSpecFile: string
+) {
+  const spec = JSON.parse(readFileSync(path.join(outDir, inputSpecFile), "utf8")) as Spec;
+  const record = blankRecord(step, model, ideaId, run);
+  record.inputSpecFile = inputSpecFile;
+  try {
+    const result = await callModel(model, buildPrototypePrompt(spec), prototypeCall.maxTokens);
+    recordCall(record, result);
+    const code = stripCodeFences(result.text);
+    record.hasDefaultExport = code.includes("export default");
+    record.compileError = await compileError(code);
+    record.compiles = record.compileError === null;
+    record.codeValid = record.hasDefaultExport && record.compiles && !record.truncated;
+    // Saved even when truncated or broken, so partial output can be inspected.
+    record.outputFile = `code/idea${ideaId}-${model.slug}-run${run}${step === "code-retry" ? "-retry" : ""}.jsx`;
+    writeFileSync(path.join(outDir, record.outputFile), code + "\n");
+  } catch (error) {
+    record.error = (error as Error).message;
+  }
+  store.put(record);
+  logRecord(record);
+}
+
+/** Code runs that completed but failed their checks, and don't have a finished retry yet. */
+function retryTargets(store: RunStore, { models, ideaIds, runs, rerun }: StepOptions): RunRecord[] {
+  return store.records.filter(
+    (r) =>
+      r.step === "code" &&
+      r.error === null &&
+      r.codeValid === false &&
+      r.inputSpecFile !== null &&
+      r.run <= runs &&
+      ideaIds.includes(r.ideaId) &&
+      models.some((m) => m.id === r.model) &&
+      shouldRun(store, rerun, "code-retry", r.model, r.ideaId, r.run)
+  );
+}
+
+async function runRetryStep(outDir: string, store: RunStore, options: StepOptions) {
+  const targets = retryTargets(store, options);
+  console.log(`Retrying ${targets.length} failed code run(s) once each.`);
+  for (const original of targets) {
+    await generateCode(outDir, store, "code-retry", modelConfig(original.model), original.ideaId, original.run, original.inputSpecFile!);
   }
 }
 
@@ -643,16 +683,22 @@ const csvCell = (value: unknown) => {
  * so API errors and truncated runs count as failures.
  */
 function writeSummary(outDir: string, records: RunRecord[]) {
+  const retryOf = (r: RunRecord) =>
+    records.find((x) => x.step === "code-retry" && x.model === r.model && x.ideaId === r.ideaId && x.run === r.run);
+  const codeChecks: [string, (r: RunRecord) => boolean | null][] = [
+    ["has_default_export", (r) => r.hasDefaultExport],
+    ["compiles", (r) => r.compiles],
+    ["code_valid", (r) => r.codeValid],
+  ];
   const checks: Record<Step, [string, (r: RunRecord) => boolean | null][]> = {
     spec: [
       ["json_parsed", (r) => r.jsonParsed],
       ["spec_valid", (r) => r.specValid],
     ],
-    code: [
-      ["has_default_export", (r) => r.hasDefaultExport],
-      ["compiles", (r) => r.compiles],
-      ["code_valid", (r) => r.codeValid],
-    ],
+    code: records.some((r) => r.step === "code-retry")
+      ? [...codeChecks, ["code_valid_with_one_retry", (r) => Boolean(r.codeValid || retryOf(r)?.codeValid)]]
+      : codeChecks,
+    "code-retry": codeChecks,
   };
   const header = ["step", "model", "runs", "api_errors", "truncated", "check", "passed", "pass_rate"];
   const rows: string[][] = [];
@@ -1185,8 +1231,8 @@ async function main() {
     },
   });
   const step = values.step!;
-  if (!["spec", "code", "all", "report", "serve", "list-models"].includes(step)) {
-    throw new Error(`--step must be spec, code, all, report, serve, or list-models (got ${step})`);
+  if (!["spec", "code", "all", "report", "serve", "list-models", "retry-failed"].includes(step)) {
+    throw new Error(`--step must be spec, code, all, report, serve, list-models, or retry-failed (got ${step})`);
   }
   const models = values.models
     ? values.models.split(",").map((name) => {
@@ -1216,13 +1262,15 @@ async function main() {
   const options: StepOptions = { models, ideaIds, runs, rerun: values.rerun! };
 
   // Only providers with runs still to do need a key; completed runs are skipped.
-  const steps: Step[] = step === "all" ? ["spec", "code"] : step === "report" ? [] : [step as Step];
-  const pending = models.filter((m) =>
-    steps.some((st) =>
-      ideaIds.some((ideaId) =>
-        Array.from({ length: runs }, (_, i) => i + 1).some((run) => shouldRun(store, options.rerun, st, m.id, ideaId, run))
-      )
-    )
+  const steps: Step[] = step === "all" ? ["spec", "code"] : step === "spec" || step === "code" ? [step] : [];
+  const pending = models.filter(
+    (m) =>
+      steps.some((st) =>
+        ideaIds.some((ideaId) =>
+          Array.from({ length: runs }, (_, i) => i + 1).some((run) => shouldRun(store, options.rerun, st, m.id, ideaId, run))
+        )
+      ) ||
+      (step === "retry-failed" && retryTargets(store, options).some((r) => r.model === m.id))
   );
   for (const provider of new Set(pending.map((m) => m.provider))) {
     const problem = missingKeyMessage(provider);
@@ -1234,6 +1282,7 @@ async function main() {
 
   if (step === "spec" || step === "all") await runSpecStep(outDir, store, options);
   if (step === "code" || step === "all") await runCodeStep(outDir, store, options);
+  if (step === "retry-failed") await runRetryStep(outDir, store, options);
 
   const reported = store.records.filter((r) => CONFIG.comparison.includes(r.model));
   writeCsv(outDir, reported);
