@@ -1,0 +1,32 @@
+{
+  "productName": "Reorient",
+  "oneLiner": "A web dashboard that helps PMs rebuild project context in seconds when switching between projects.",
+  "problem": "PMs context-switch across multiple projects and lose track of the last decision, active blockers, and who is waiting on what. This causes repeated questions, stale updates, missed dependencies, and slow re-entry into work.",
+  "targetUser": "Product managers and project leads managing multiple concurrent initiatives, especially in startups and scale-ups where context is spread across tickets, docs, and chat.",
+  "tone": "calm, focused, trustworthy",
+  "platform": "Web",
+  "coreFlow": [
+    "Sign in and connect project tools (e.g., Jira, Linear, Slack, Notion, GitHub) or add projects manually.",
+    "View a portfolio dashboard ranked by last activity, decision age, blocker count, and waiting-on items.",
+    "Select a project to generate a concise reorientation brief: last decision, what changed, open blockers, and pending asks.",
+    "Review and act on context: acknowledge decisions, assign blockers, follow up on waiting-on items, or mark items resolved.",
+    "Share the brief with stakeholders or return to work with a clear next action."
+  ],
+  "screens": [
+    {
+      "name": "Portfolio Overview",
+      "purpose": "Shows all active projects with context signals: last decision, blocker count, waiting-on count, and freshness."
+    },
+    {
+      "name": "Project Reorient",
+      "purpose": "Presents a focused brief for one project so a PM can rebuild context quickly and decide the next action."
+    },
+    {
+      "name": "Decision Log",
+      "purpose": "Lists key project decisions with owner, date, rationale, status, and source links for quick recall."
+    },
+    {
+      "name": "Blocker Board",
+      "purpose": "Tracks active blockers, dependencies, owners, impact, age, and escalation status."
+    },
+   

@@ -1,0 +1,45 @@
+{
+  "productName": "DecisionLog",
+  "oneLiner": "A web-based decision log that records what was decided, why, and when.",
+  "problem": "Teams lose context and accountability for decisions, causing repeated discussions, misaligned actions, and difficulty tracing rationale.",
+  "targetUser": "Project managers, product owners, and cross‑functional teams who need a single source of truth for decisions.",
+  "tone": "clear, professional, trustworthy",
+  "platform": "web",
+  "coreFlow": [
+    "Open Dashboard",
+    "Create New Decision",
+    "Enter decision details, rationale, and date",
+    "Assign tags and participants",
+    "Save and view in Decision History",
+    "Search, filter, or export decisions"
+  ],
+  "screens": [
+    {
+      "name": "Dashboard",
+      "purpose": "Overview of recent decisions, quick actions, and activity metrics."
+    },
+    {
+      "name": "Decision Entry",
+      "purpose": "Form to capture what was decided, why, when, and who was involved."
+    },
+    {
+      "name": "Decision Detail",
+      "purpose": "Full view of a single decision with rationale, discussion notes, and audit trail."
+    },
+    {
+      "name": "Search & Filter",
+      "purpose": "Find decisions by keywords, tags, dates, or participants."
+    },
+    {
+      "name": "Settings",
+      "purpose": "Configure team members, permissions, export options, and branding."
+    }
+  ],
+  "outOfScope": [
+    "Mobile native app",
+    "Real‑time chat or discussion threads",
+    "AI‑generated decision suggestions",
+    "Deep integrations with external PM tools",
+    "Advanced analytics dashboards"
+  ]
+}

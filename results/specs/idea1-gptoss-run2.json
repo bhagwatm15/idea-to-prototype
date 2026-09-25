@@ -1,0 +1,45 @@
+{
+  "productName": "Project Switchboard",
+  "oneLiner": "A web dashboard that instantly re‑orients product managers to a project's current state when they switch contexts.",
+  "problem": "When PMs juggle multiple projects they lose context, miss recent decisions, overlook blockers, and cannot quickly see who is waiting on what, leading to delays and miscommunication.",
+  "targetUser": "Product managers and product owners who actively manage several concurrent projects.",
+  "tone": "clean, professional, focused",
+  "platform": "web",
+  "coreFlow": [
+    "Log in and land on the Project Switchboard home page",
+    "Select the project you are switching to",
+    "View the Project Snapshot that surfaces the last decision, key metrics, and status",
+    "Inspect the Blockers & Risks panel to see current impediments and owners",
+    "Review the Dependencies & Waiting panel to understand who is waiting on what",
+    "Drill into the Activity Log for deeper context or add a quick note/update"
+  ],
+  "screens": [
+    {
+      "name": "Home / Project Selector",
+      "purpose": "Allows the PM to pick the active project and shows a high‑level health indicator for each."
+    },
+    {
+      "name": "Project Snapshot Overview",
+      "purpose": "Summarizes the most recent decision, current phase, and top‑level metrics at a glance."
+    },
+    {
+      "name": "Blockers & Risks",
+      "purpose": "Lists active blockers, their owners, impact level, and next steps."
+    },
+    {
+      "name": "Dependencies & Waiting",
+      "purpose": "Displays who is waiting on inputs, approvals, or deliverables and the expected due dates."
+    },
+    {
+      "name": "Activity Log / Decision Detail",
+      "purpose": "Chronological view of decisions, discussions, and notes with quick edit/add capability."
+    }
+  ],
+  "outOfScope": [
+    "Full task or roadmap management",
+    "Real‑time chat or messaging integration",
+    "Mobile‑native app",
+    "AI‑driven decision recommendations",
+    "Deep integrations with external PM tools beyond basic linking"
+  ]
+}

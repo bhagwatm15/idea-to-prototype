@@ -1,0 +1,44 @@
+{
+  "productName": "FridgeFeast Planner",
+  "oneLiner": "Weekly meal plans built from the ingredients you already have.",
+  "problem": "Households waste food and waste time figuring meals because they don't know what’s already in the fridge and lack an easy way to plan around it.",
+  "targetUser": "Busy adults, families, and health‑conscious cooks who want to reduce waste and simplify dinner planning.",
+  "tone": "friendly, practical, fresh",
+  "platform": "web",
+  "coreFlow": [
+    "User opens the app and lands on the dashboard",
+    "User adds or scans current fridge items in the Inventory screen",
+    "User selects dietary preferences and constraints",
+    "App generates a week‑long meal plan using only available ingredients",
+    "User reviews recipes, adjusts meals, and exports a shopping list or printable plan"
+  ],
+  "screens": [
+    {
+      "name": "Dashboard",
+      "purpose": "Welcome screen that shows a quick summary of inventory status and a call‑to‑action to start planning."
+    },
+    {
+      "name": "Inventory Input",
+      "purpose": "Add, edit, or delete fridge items via manual entry, barcode scan, or bulk upload."
+    },
+    {
+      "name": "Preferences",
+      "purpose": "Set dietary filters (e.g., vegetarian, low‑carb) and portion preferences."
+    },
+    {
+      "name": "Meal Plan",
+      "purpose": "Weekly calendar view displaying generated meals, with quick swap options."
+    },
+    {
+      "name": "Recipe Detail",
+      "purpose": "Step‑by‑step cooking instructions, ingredient breakdown, and nutritional snapshot."
+    }
+  ],
+  "outOfScope": [
+    "Real‑time syncing with smart fridges",
+    "Native mobile app versions",
+    "Direct grocery delivery integration",
+    "AI‑generated recipes that require new ingredients",
+    "Comprehensive nutrition tracking dashboards"
+  ]
+}

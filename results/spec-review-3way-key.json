@@ -1,0 +1,212 @@
+[
+  {
+    "label": "A",
+    "model": "deepseek-flash:no-thinking",
+    "ideaId": 1,
+    "run": 2,
+    "file": "specs/idea1-deepseek-nothink-run2.json"
+  },
+  {
+    "label": "B",
+    "model": "claude-sonnet-5",
+    "ideaId": 1,
+    "run": 2,
+    "file": "specs/idea1-sonnet-run2.json"
+  },
+  {
+    "label": "C",
+    "model": "deepseek-flash:no-thinking",
+    "ideaId": 1,
+    "run": 1,
+    "file": "specs/idea1-deepseek-nothink-run1.json"
+  },
+  {
+    "label": "D",
+    "model": "claude-sonnet-5",
+    "ideaId": 1,
+    "run": 1,
+    "file": "specs/idea1-sonnet-run1.json"
+  },
+  {
+    "label": "E",
+    "model": "openai/gpt-oss-120b",
+    "ideaId": 1,
+    "run": 1,
+    "file": "specs/idea1-gptoss-run1.json"
+  },
+  {
+    "label": "F",
+    "model": "openai/gpt-oss-120b",
+    "ideaId": 1,
+    "run": 2,
+    "file": "specs/idea1-gptoss-run2.json"
+  },
+  {
+    "label": "G",
+    "model": "claude-sonnet-5",
+    "ideaId": 2,
+    "run": 1,
+    "file": "specs/idea2-sonnet-run1.json"
+  },
+  {
+    "label": "H",
+    "model": "claude-sonnet-5",
+    "ideaId": 2,
+    "run": 2,
+    "file": "specs/idea2-sonnet-run2.json"
+  },
+  {
+    "label": "I",
+    "model": "openai/gpt-oss-120b",
+    "ideaId": 2,
+    "run": 1,
+    "file": "specs/idea2-gptoss-run1.json"
+  },
+  {
+    "label": "J",
+    "model": "openai/gpt-oss-120b",
+    "ideaId": 2,
+    "run": 2,
+    "file": "specs/idea2-gptoss-run2.json"
+  },
+  {
+    "label": "K",
+    "model": "deepseek-flash:no-thinking",
+    "ideaId": 2,
+    "run": 2,
+    "file": "specs/idea2-deepseek-nothink-run2.json"
+  },
+  {
+    "label": "L",
+    "model": "deepseek-flash:no-thinking",
+    "ideaId": 2,
+    "run": 1,
+    "file": "specs/idea2-deepseek-nothink-run1.json"
+  },
+  {
+    "label": "M",
+    "model": "claude-sonnet-5",
+    "ideaId": 3,
+    "run": 1,
+    "file": "specs/idea3-sonnet-run1.json"
+  },
+  {
+    "label": "N",
+    "model": "openai/gpt-oss-120b",
+    "ideaId": 3,
+    "run": 1,
+    "file": "specs/idea3-gptoss-run1.json"
+  },
+  {
+    "label": "O",
+    "model": "claude-sonnet-5",
+    "ideaId": 3,
+    "run": 2,
+    "file": "specs/idea3-sonnet-run2.json"
+  },
+  {
+    "label": "P",
+    "model": "openai/gpt-oss-120b",
+    "ideaId": 3,
+    "run": 2,
+    "file": "specs/idea3-gptoss-run2.json"
+  },
+  {
+    "label": "Q",
+    "model": "deepseek-flash:no-thinking",
+    "ideaId": 3,
+    "run": 2,
+    "file": "specs/idea3-deepseek-nothink-run2.json"
+  },
+  {
+    "label": "R",
+    "model": "deepseek-flash:no-thinking",
+    "ideaId": 3,
+    "run": 1,
+    "file": "specs/idea3-deepseek-nothink-run1.json"
+  },
+  {
+    "label": "S",
+    "model": "deepseek-flash:no-thinking",
+    "ideaId": 4,
+    "run": 2,
+    "file": "specs/idea4-deepseek-nothink-run2.json"
+  },
+  {
+    "label": "T",
+    "model": "deepseek-flash:no-thinking",
+    "ideaId": 4,
+    "run": 1,
+    "file": "specs/idea4-deepseek-nothink-run1.json"
+  },
+  {
+    "label": "U",
+    "model": "openai/gpt-oss-120b",
+    "ideaId": 4,
+    "run": 1,
+    "file": "specs/idea4-gptoss-run1.json"
+  },
+  {
+    "label": "V",
+    "model": "claude-sonnet-5",
+    "ideaId": 4,
+    "run": 1,
+    "file": "specs/idea4-sonnet-run1.json"
+  },
+  {
+    "label": "W",
+    "model": "openai/gpt-oss-120b",
+    "ideaId": 4,
+    "run": 2,
+    "file": "specs/idea4-gptoss-run2.json"
+  },
+  {
+    "label": "X",
+    "model": "claude-sonnet-5",
+    "ideaId": 4,
+    "run": 2,
+    "file": "specs/idea4-sonnet-run2.json"
+  },
+  {
+    "label": "Y",
+    "model": "deepseek-flash:no-thinking",
+    "ideaId": 5,
+    "run": 2,
+    "file": "specs/idea5-deepseek-nothink-run2.json"
+  },
+  {
+    "label": "Z",
+    "model": "deepseek-flash:no-thinking",
+    "ideaId": 5,
+    "run": 1,
+    "file": "specs/idea5-deepseek-nothink-run1.json"
+  },
+  {
+    "label": "AA",
+    "model": "openai/gpt-oss-120b",
+    "ideaId": 5,
+    "run": 1,
+    "file": "specs/idea5-gptoss-run1.json"
+  },
+  {
+    "label": "AB",
+    "model": "claude-sonnet-5",
+    "ideaId": 5,
+    "run": 1,
+    "file": "specs/idea5-sonnet-run1.json"
+  },
+  {
+    "label": "AC",
+    "model": "claude-sonnet-5",
+    "ideaId": 5,
+    "run": 2,
+    "file": "specs/idea5-sonnet-run2.json"
+  },
+  {
+    "label": "AD",
+    "model": "openai/gpt-oss-120b",
+    "ideaId": 5,
+    "run": 2,
+    "file": "specs/idea5-gptoss-run2.json"
+  }
+]

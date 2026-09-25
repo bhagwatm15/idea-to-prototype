@@ -1,0 +1,44 @@
+{
+  "productName": "Project Pulse Dashboard",
+  "oneLiner": "A web dashboard that instantly re‑orients product managers when they switch projects, surfacing the latest decisions, current blockers, and pending dependencies.",
+  "problem": "Product managers juggling multiple projects lose context when they switch focus, resulting in wasted time, missed decisions, and duplicated effort.",
+  "targetUser": "Product managers who oversee several active projects or cross‑functional initiatives.",
+  "tone": "clear, focused, professional",
+  "platform": "web",
+  "coreFlow": [
+    "Log in via SSO",
+    "Select a project from the project list",
+    "View the project snapshot showing last decision, blockers, and pending dependencies",
+    "Drill into each section for detailed context and add notes",
+    "Update status or assign owners to unblock items"
+  ],
+  "screens": [
+    {
+      "name": "Login / SSO",
+      "purpose": "Authenticate the user and establish a secure session."
+    },
+    {
+      "name": "Project Selector",
+      "purpose": "Allow the PM to quickly switch between their active projects."
+    },
+    {
+      "name": "Overview Dashboard",
+      "purpose": "Present a concise snapshot of the most recent decision, current blockers, and who is waiting on what."
+    },
+    {
+      "name": "Decision Detail",
+      "purpose": "Show full context of the last decision, rationale, and related documentation, with ability to add comments."
+    },
+    {
+      "name": "Blockers & Dependencies",
+      "purpose": "List active blockers, responsible owners, and pending hand‑offs, enabling quick assignment or escalation."
+    }
+  ],
+  "outOfScope": [
+    "Real‑time chat or messaging",
+    "Full project planning or Gantt charts",
+    "Resource allocation and budgeting tools",
+    "Integration with every PM software (only core integrations planned)",
+    "Mobile native application"
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "productName": "ContextSwitch",
+  "oneLiner": "A re-orientation dashboard that gets PMs back up to speed in seconds when switching between projects.",
+  "problem": "Product managers juggle multiple projects a day, and every switch costs 10-20 minutes of reloading context: what was the last decision, what's blocked, and who is waiting on them. That friction burns focus, causes dropped follow-ups, and leads to decisions made without full context.",
+  "targetUser": "Product managers at startups and mid-size companies who own 2-5 parallel projects or workstreams and context-switch multiple times per day.",
+  "tone": "Calm, focused, trustworthy",
+  "platform": "web",
+  "coreFlow": [
+    "PM opens the dashboard and sees cards for each active project with a freshness indicator.",
+    "PM clicks a project card to expand its re-orientation brief in the same view.",
+    "The brief shows: last decision (what, when, who), current blockers (what, why stuck, owner), and who is waiting on the PM and for what.",
+    "PM clicks any item to jump to the source (ticket, doc, message) or mark it resolved / no longer waiting.",
+    "PM pins or snoozes items to clear their queue, and returns to the grid with one project marked as 're-oriented'."
+  ],
+  "screens": [
+    {
+      "name": "Project Grid",
+      "purpose": "Home view showing all active projects as cards with status, freshness, and counts of blockers and waiting-on-you items so the PM picks where to re-orient."
+    },
+    {
+      "name": "Re-orientation Brief",
+      "purpose": "Expanded view of a single project showing the last decision, open blockers, and who's waiting on what, with one-click access to the underlying sources."
+    },
+    {
+      "name": "Waiting On You",
+      "purpose": "Cross-project queue of everything other people are blocked on the PM for, sorted by age and importance, so nothing falls through the cracks."
+    },
+    {
+      "name": "Note & Resolve",
+      "purpose": "Lightweight capture and closure: add a decision note, mark a blocker cleared, or log that a waiting party has been unblocked."
+    },
+    {
+      "name": "Settings & Integrations",
+      "purpose": "Connect sources (issue tracker, docs, chat) and tune what counts as a decision, a blocker, or a waiting-on item per project."
+    }
+  ],
+  "outOfScope": [
+    "Replacing existing project management or issue tracking tools",
+    "Automated meeting notes or transcription",
+    "Gantt charts, roadmapping, or sprint planning",
+    "Team-wide reporting and executive dashboards",
+    "Mobile native apps (web responsive only for v1)",
+    "AI-generated recommendations or prioritization"
+  ]
+}

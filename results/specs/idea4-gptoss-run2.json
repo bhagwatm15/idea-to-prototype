@@ -1,0 +1,44 @@
+{
+  "productName": "FridgeFit Meal Planner",
+  "oneLiner": "Web app that creates a week‑long meal plan using ingredients you already have in your fridge.",
+  "problem": "Home cooks waste time and food because they lack a quick way to turn existing fridge contents into balanced weekly meals.",
+  "targetUser": "Busy adults and families who want to reduce food waste and simplify dinner decisions.",
+  "tone": "friendly, helpful, minimalist",
+  "platform": "web",
+  "coreFlow": [
+    "Enter current fridge inventory",
+    "Select dietary preferences and constraints",
+    "Generate a 7‑day meal plan using available ingredients",
+    "Review, edit, or swap meals",
+    "Export a grocery list for missing items"
+  ],
+  "screens": [
+    {
+      "name": "Dashboard",
+      "purpose": "Overview of current inventory, upcoming meals, and quick actions."
+    },
+    {
+      "name": "Inventory Input",
+      "purpose": "Add, edit, or remove fridge items via manual entry or CSV upload."
+    },
+    {
+      "name": "Meal Plan",
+      "purpose": "Display the generated weekly menu with recipe links and ingredient usage."
+    },
+    {
+      "name": "Meal Detail",
+      "purpose": "Show step‑by‑step recipe, highlight which ingredients are already on hand, and allow swaps."
+    },
+    {
+      "name": "Settings",
+      "purpose": "Configure dietary filters, portion sizes, and export preferences."
+    }
+  ],
+  "outOfScope": [
+    "AI‑powered image recognition for automatic inventory capture",
+    "Integration with grocery delivery APIs",
+    "Mobile‑native applications",
+    "Social sharing or community recipe ratings",
+    "Advanced nutritional analytics beyond basic macro summary"
+  ]
+}

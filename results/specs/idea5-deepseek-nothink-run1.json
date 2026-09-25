@@ -1,0 +1,44 @@
+{
+  "productName": "TripSplit",
+  "oneLiner": "Split shared trip expenses effortlessly—no spreadsheet required.",
+  "problem": "Travelers struggle to track who paid for what during group trips, leading to awkward math, forgotten expenses, and delayed repayments.",
+  "targetUser": "Friend groups, couples, and colleagues taking shared trips who want a simple, transparent way to settle costs without manual spreadsheets.",
+  "tone": "friendly, breezy, trustworthy",
+  "platform": "Web",
+  "coreFlow": [
+    "Create a trip and invite members via link",
+    "Log an expense: payer, amount, and who it's split between",
+    "View real-time balances showing who owes whom",
+    "Settle up with one-click payment links or mark as paid",
+    "Review trip summary and export final report"
+  ],
+  "screens": [
+    {
+      "name": "Trip Dashboard",
+      "purpose": "See all trip members, total spent, and current balances at a glance."
+    },
+    {
+      "name": "Add Expense",
+      "purpose": "Quickly record a new shared cost with payer, amount, and split details."
+    },
+    {
+      "name": "Balances",
+      "purpose": "Show simplified debts and suggested settlements between members."
+    },
+    {
+      "name": "Activity Feed",
+      "purpose": "Browse chronological list of all expenses with filters and edit options."
+    },
+    {
+      "name": "Settle Up",
+      "purpose": "Mark debts as paid and generate payment links or reminders."
+    }
+  ],
+  "outOfScope": [
+    "Direct bank account integration or automatic payments",
+    "Real-time currency conversion for international trips",
+    "Receipt scanning via OCR",
+    "Group chat or messaging features",
+    "Native mobile apps"
+  ]
+}

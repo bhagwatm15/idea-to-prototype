@@ -1,0 +1,44 @@
+{
+  "productName": "TripSplit",
+  "oneLiner": "Web app that instantly splits and tracks shared trip expenses without spreadsheets.",
+  "problem": "Travel groups waste time and make errors when manually calculating, splitting, and settling shared costs using spreadsheets or ad‑hoc messages.",
+  "targetUser": "Friends, families, and small tour organizers who need a quick, collaborative way to manage trip expenses.",
+  "tone": "friendly, modern, trustworthy",
+  "platform": "web",
+  "coreFlow": [
+    "Create a new trip",
+    "Invite participants via email or link",
+    "Add expenses with payer and participants",
+    "Auto‑calculate each person’s share",
+    "Review balances and settle debts"
+  ],
+  "screens": [
+    {
+      "name": "Dashboard",
+      "purpose": "Shows a list of active trips and quick actions to create or join a trip."
+    },
+    {
+      "name": "Trip Detail",
+      "purpose": "Displays all recorded expenses, participant list, and real‑time balances."
+    },
+    {
+      "name": "Add Expense",
+      "purpose": "Form for entering expense amount, description, payer, and participants to split."
+    },
+    {
+      "name": "Settlement Summary",
+      "purpose": "Summarizes who owes whom, with simple pay‑back suggestions."
+    },
+    {
+      "name": "Invite & Settings",
+      "purpose": "Allows trip creator to invite new members, edit trip details, and set currency."
+    }
+  ],
+  "outOfScope": [
+    "Native mobile applications",
+    "Direct bank or payment gateway integrations",
+    "Multi‑currency conversion",
+    "Recurring trip templates",
+    "Advanced budgeting analytics"
+  ]
+}

@@ -1,6 +1,16 @@
 step,model,runs,api_errors,truncated,check,passed,pass_rate
 spec,claude-sonnet-5,10,0,0,json_parsed,10,100%
 spec,claude-sonnet-5,10,0,0,spec_valid,10,100%
+spec,deepseek-flash:no-thinking,10,0,0,json_parsed,10,100%
+spec,deepseek-flash:no-thinking,10,0,0,spec_valid,10,100%
+spec,openai/gpt-oss-120b,10,0,0,json_parsed,10,100%
+spec,openai/gpt-oss-120b,10,0,0,spec_valid,10,100%
 code,claude-sonnet-5,10,0,0,has_default_export,10,100%
 code,claude-sonnet-5,10,0,0,compiles,10,100%
 code,claude-sonnet-5,10,0,0,code_valid,10,100%
+code,deepseek-flash:no-thinking,10,0,0,has_default_export,10,100%
+code,deepseek-flash:no-thinking,10,0,0,compiles,10,100%
+code,deepseek-flash:no-thinking,10,0,0,code_valid,10,100%
+code,openai/gpt-oss-120b,10,0,0,has_default_export,10,100%
+code,openai/gpt-oss-120b,10,0,0,compiles,7,70%
+code,openai/gpt-oss-120b,10,0,0,code_valid,7,70%

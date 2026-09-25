@@ -1,0 +1,44 @@
+{
+  "productName": "BulletBridge",
+  "oneLiner": "Transform rough status bullets into polished updates tailored for executives and team members.",
+  "problem": "Busy professionals waste time reformatting and rewriting status updates for different audiences, leading to inconsistency and reduced communication efficiency.",
+  "targetUser": "Product managers, project leads, and team leads who need to share concise status reports to both executives and their own teams.",
+  "tone": "professional, clear, efficient",
+  "platform": "web",
+  "coreFlow": [
+    "User lands on the dashboard",
+    "User pastes or types raw status bullets",
+    "User selects target audience (executive or team)",
+    "System generates a polished version",
+    "User reviews, edits if needed, and exports or shares the update"
+  ],
+  "screens": [
+    {
+      "name": "Dashboard",
+      "purpose": "Welcome screen with quick start, recent updates, and help resources."
+    },
+    {
+      "name": "Bullet Input",
+      "purpose": "Rich text area where users paste or type their raw status bullets."
+    },
+    {
+      "name": "Audience Selector",
+      "purpose": "Toggle to choose between executive version and team version, with preview of tone differences."
+    },
+    {
+      "name": "Generated Update Preview",
+      "purpose": "Displays the AI‑crafted update, allowing inline edits and formatting adjustments."
+    },
+    {
+      "name": "Export & Share",
+      "purpose": "Options to copy to clipboard, download as PDF/MD, or send via email/slack integration."
+    }
+  ],
+  "outOfScope": [
+    "Mobile native app",
+    "Real‑time multi‑user collaboration",
+    "Deep integrations with all third‑party PM tools",
+    "Advanced analytics on update effectiveness",
+    "Multi‑language translation"
+  ]
+}

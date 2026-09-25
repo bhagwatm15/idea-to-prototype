@@ -1,0 +1,44 @@
+{
+  "productName": "BulletBrief",
+  "oneLiner": "Convert raw status notes into polished updates tailored for executives and the broader team.",
+  "problem": "Teams waste time reformatting status bullets and struggle to craft messages that suit different audiences, leading to inconsistent communication and missed insights.",
+  "targetUser": "Mid-level managers and project leads who compile weekly status reports for both leadership and their own teams.",
+  "tone": "clear, professional, efficient",
+  "platform": "web",
+  "coreFlow": [
+    "Paste or import bullet points",
+    "Choose audience (Exec / Team)",
+    "Select tone and detail level",
+    "Review AI-generated draft",
+    "Edit and download/share"
+  ],
+  "screens": [
+    {
+      "name": "Dashboard",
+      "purpose": "Home view with list of past briefs and a button to create a new update."
+    },
+    {
+      "name": "Input Screen",
+      "purpose": "Textarea or file upload where users paste raw status bullets."
+    },
+    {
+      "name": "Audience Selection",
+      "purpose": "Modal allowing selection of Exec or Team version and customization of tone, length, and detail."
+    },
+    {
+      "name": "Draft Review",
+      "purpose": "Display the generated updates side‑by‑side with inline editing capabilities."
+    },
+    {
+      "name": "Export & Share",
+      "purpose": "Provide options to copy, download as PDF/Word, email, or push to collaboration tools."
+    }
+  ],
+  "outOfScope": [
+    "Real-time collaborative editing",
+    "Integration with external project‑management platforms",
+    "Multi-language translation",
+    "Dedicated mobile application",
+    "Advanced analytics on communication impact"
+  ]
+}

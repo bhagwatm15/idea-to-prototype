@@ -1,0 +1,46 @@
+{
+  "productName": "Relay",
+  "oneLiner": "A re-orientation dashboard that tells PMs where every project stands the moment they switch back to it.",
+  "problem": "Product managers juggle multiple projects in parallel and lose 15-30 minutes of context every time they switch, reconstructing the last decision, unresolved blockers, and who is waiting on them. This wasted ramp-up time leads to slow replies, duplicated conversations, and dropped threads.",
+  "targetUser": "Mid-to-senior product managers at startups or scale-ups who own 2-5 concurrent projects and context-switch multiple times per day.",
+  "tone": "calm, focused, trustworthy",
+  "platform": "Web (desktop-first, responsive)",
+  "coreFlow": [
+    "PM lands on the dashboard and sees all active projects as 'context cards' ranked by staleness and urgency.",
+    "PM clicks a project card (or hits the global keyboard shortcut to jump to the project they last touched).",
+    "The project view surfaces the three anchors: last decision made (with timestamp and owner), current blockers, and open threads with who is waiting on what.",
+    "PM marks items as acknowledged, resolved, or nudged, and optionally writes a one-line 'where I left off' note.",
+    "The dashboard updates staleness and priority scores in real time so the next switch is instantly oriented."
+  ],
+  "screens": [
+    {
+      "name": "Dashboard / Project Switcher",
+      "purpose": "Show all active projects as context cards with last-touched time, decision recency, blocker count, and waiting-on count; allow one-click entry into any project."
+    },
+    {
+      "name": "Project Orientation View",
+      "purpose": "Present the last decision, active blockers, and a 'who's waiting on what' list for one project, with actions to acknowledge, resolve, or nudge."
+    },
+    {
+      "name": "Focus / Handoff Note",
+      "purpose": "Let the PM write a short 'where I left off' note when leaving a project, which becomes the first thing they see on return."
+    },
+    {
+      "name": "Integrations and Sources",
+      "purpose": "Connect Slack, Jira/Linear, GitHub, and calendars so decisions, blockers, and waiting-on items are inferred automatically rather than entered manually."
+    },
+    {
+      "name": "Settings and Priorities",
+      "purpose": "Configure which projects are tracked, staleness thresholds, notification rules, and which sources feed each project."
+    }
+  ],
+  "outOfScope": [
+    "Full project management (no sprint planning, backlog grooming, or gantt charts)",
+    "Real-time chat or commenting — PMs still respond in their source tools",
+    "Team-facing dashboards or reporting for leadership",
+    "Mobile native apps (web only for v1)",
+    "AI-generated summaries of every thread in v1 — start with decision, blocker, and waiting-on extraction only",
+    "Time tracking, invoicing, or billing features",
+    "Replacing Slack, Jira, Linear, or Notion — Relay reads from them, it does not replace them"
+  ]
+}

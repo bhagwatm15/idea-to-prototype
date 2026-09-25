@@ -1,0 +1,45 @@
+{
+  "productName": "FridgeFeast",
+  "oneLiner": "Turn what's already in your fridge into a delicious week of meals.",
+  "problem": "People waste food and money because they don't know what to cook with the ingredients they already have, and meal planning feels like a chore.",
+  "targetUser": "Busy home cooks (25-45) who want to reduce food waste, save money, and eat home-cooked meals without the mental load of planning.",
+  "tone": "warm, fresh, practical",
+  "platform": "web",
+  "coreFlow": [
+    "User adds ingredients they have in their fridge/pantry",
+    "App generates a personalized 7-day meal plan using those ingredients",
+    "User reviews and tweaks the plan (swap meals, adjust servings, mark dislikes)",
+    "App produces a consolidated shopping list for missing items",
+    "User saves the plan and can export or share it"
+  ],
+  "screens": [
+    {
+      "name": "My Fridge",
+      "purpose": "Quickly add, edit, and organize available ingredients with smart suggestions and quantities."
+    },
+    {
+      "name": "Weekly Plan",
+      "purpose": "View and interact with the auto-generated 7-day meal plan, including swap and regenerate options."
+    },
+    {
+      "name": "Meal Details",
+      "purpose": "See full recipe, steps, time, and nutritional info for a selected meal."
+    },
+    {
+      "name": "Shopping List",
+      "purpose": "Review missing ingredients aggregated from the meal plan, with checkboxes for shopping."
+    },
+    {
+      "name": "Preferences",
+      "purpose": "Set dietary restrictions, allergies, cuisine likes/dislikes, and household size to personalize plans."
+    }
+  ],
+  "outOfScope": [
+    "Native mobile apps (iOS/Android)",
+    "Grocery delivery or in-app purchasing",
+    "Social features (sharing, following, comments)",
+    "Barcode scanning or photo-based ingredient recognition",
+    "Nutrition tracking or calorie counting",
+    "Multi-user household accounts or collaborative planning"
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "productName": "Signal",
+  "oneLiner": "Turn rough status bullets into two ready-to-send updates — one for execs, one for the team.",
+  "problem": "People write status updates twice: a terse, outcome-focused version for leadership and a detailed, context-rich version for their team. Doing this manually is slow, inconsistent, and often skipped, so stakeholders get either too much noise or too little signal.",
+  "targetUser": "Team leads, PMs, and ICs who send recurring status updates to both leadership and their working team.",
+  "tone": "calm, crisp, professional",
+  "platform": "web",
+  "coreFlow": [
+    "Paste or type rough status bullets into a single input.",
+    "Tag each bullet as done, in progress, blocked, or FYI (optional but speeds review).",
+    "Select audience presets: Executive (outcomes, risks, asks) and Team (detail, dependencies, next steps).",
+    "Generate both drafts side by side, each editable inline.",
+    "Copy either version individually or send both via email/Slack export."
+  ],
+  "screens": [
+    {
+      "name": "Compose",
+      "purpose": "Capture rough bullets, optional tags, and context like project name and update period."
+    },
+    {
+      "name": "Generate & Review",
+      "purpose": "Show side-by-side Exec and Team drafts with inline editing and regenerate-on-selection controls."
+    },
+    {
+      "name": "Templates & Presets",
+      "purpose": "Define reusable audience rules, voice, length limits, and banned/required phrases."
+    },
+    {
+      "name": "History",
+      "purpose": "Browse past updates, duplicate or diff against the previous period, and re-export."
+    },
+    {
+      "name": "Settings",
+      "purpose": "Manage integrations, default audiences, tone, and account preferences."
+    }
+  ],
+  "outOfScope": [
+    "Real-time collaborative editing",
+    "Automatic ingestion from Jira, GitHub, or other trackers in v1",
+    "Native mobile apps",
+    "Analytics dashboards on update engagement",
+    "Multi-language generation beyond English",
+    "Scheduled auto-sending without human review"
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "productName": "FridgeFeast",
+  "oneLiner": "Turn what's in your fridge into a week of meals you'll actually want to eat.",
+  "problem": "People waste food and money because they don't know what to cook with the random ingredients they already have, and planning meals from scratch feels like a chore.",
+  "targetUser": "Busy home cooks (25–45) who want to reduce food waste, save money, and eat better without adding another planning task to their week.",
+  "tone": "warm, practical, playful",
+  "platform": "web",
+  "coreFlow": [
+    "User adds ingredients currently in their fridge (via quick-add tags, categories, or natural language entry).",
+    "App suggests a set of recipes that use those ingredients, prioritizing items that need to be used soon.",
+    "User selects or tweaks meals for the week and sees a consolidated shopping list for missing items.",
+    "User locks in the plan; app provides step-by-step cooking guidance and tracks which ingredients get used.",
+    "After the week, user reviews what was cooked vs. wasted, improving future suggestions."
+  ],
+  "screens": [
+    {
+      "name": "My Fridge",
+      "purpose": "Quickly inventory ingredients on hand, with freshness indicators and easy add/remove."
+    },
+    {
+      "name": "Meal Suggestions",
+      "purpose": "Browse recipe ideas ranked by how well they match current ingredients and reduce waste."
+    },
+    {
+      "name": "Week Planner",
+      "purpose": "Drag-and-drop selected meals across the week, see coverage of ingredients, and adjust portions or swap meals."
+    },
+    {
+      "name": "Shopping List",
+      "purpose": "Aggregated list of only the missing items needed for the chosen meals, organized by aisle."
+    },
+    {
+      "name": "Cook & Track",
+      "purpose": "Step-by-step recipe view, mark ingredients as used, and log meals cooked vs. wasted."
+    }
+  ],
+  "outOfScope": [
+    "Grocery delivery or store integration",
+    "Nutritional tracking or calorie counting",
+    "Social features (sharing, comments, following)",
+    "Multi-user household accounts or syncing",
+    "Barcode scanning or receipt parsing"
+  ]
+}

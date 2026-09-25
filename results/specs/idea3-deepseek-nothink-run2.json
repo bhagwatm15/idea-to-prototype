@@ -1,0 +1,45 @@
+{
+  "productName": "Trace",
+  "oneLiner": "A decision log that captures what you decided, why, and when—so future-you never has to ask.",
+  "problem": "Decisions get made in meetings, Slack threads, and hallway chats, then quietly disappear. Weeks later, teams repeat debates, reverse choices without context, and lose the reasoning behind their direction. Memory fades, people leave, and institutional knowledge evaporates.",
+  "targetUser": "Product managers, engineers, and founders on small to mid-sized teams who make frequent, consequential decisions and need lightweight memory without heavy process.",
+  "tone": "calm, clear, minimal",
+  "platform": "web",
+  "coreFlow": [
+    "User logs a decision in under a minute: title, what was decided, rationale, date, and optional tags or links.",
+    "Trace auto-captures the timestamp and author, then prompts for 'why' with a lightweight rationale field.",
+    "Decision appears in a chronological, searchable feed with status options (proposed, decided, reversed, superseded).",
+    "Teammates can view, comment on, or link related decisions to build context over time.",
+    "User revisits any decision to see its full history, including when it changed and what replaced it."
+  ],
+  "screens": [
+    {
+      "name": "Decision Feed",
+      "purpose": "Chronological, filterable stream of all decisions with quick status and tag indicators."
+    },
+    {
+      "name": "Log a Decision",
+      "purpose": "Fast, low-friction form capturing what, why, when, and optional context like links or affected projects."
+    },
+    {
+      "name": "Decision Detail",
+      "purpose": "Full record of a single decision with rationale, comments, related decisions, and status history."
+    },
+    {
+      "name": "Search & Filters",
+      "purpose": "Find past decisions by keyword, tag, author, date range, or status."
+    },
+    {
+      "name": "Workspace Settings",
+      "purpose": "Manage team members, tags, and decision statuses to fit the team's vocabulary."
+    }
+  ],
+  "outOfScope": [
+    "Real-time chat or messaging",
+    "Task or project management boards",
+    "Automated decision extraction from meetings or Slack",
+    "Document editing or wiki-style long-form pages",
+    "Approval workflows or role-based permissions beyond basic team membership",
+    "Mobile apps (web only for v1)"
+  ]
+}

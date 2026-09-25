@@ -1,0 +1,212 @@
+[
+  {
+    "label": "A",
+    "model": "deepseek-flash:no-thinking",
+    "ideaId": 1,
+    "run": 2,
+    "file": "code/idea1-deepseek-nothink-run2.jsx"
+  },
+  {
+    "label": "B",
+    "model": "openai/gpt-oss-120b",
+    "ideaId": 1,
+    "run": 2,
+    "file": "code/idea1-gptoss-run2.jsx"
+  },
+  {
+    "label": "C",
+    "model": "deepseek-flash:no-thinking",
+    "ideaId": 1,
+    "run": 1,
+    "file": "code/idea1-deepseek-nothink-run1.jsx"
+  },
+  {
+    "label": "D",
+    "model": "claude-sonnet-5",
+    "ideaId": 1,
+    "run": 2,
+    "file": "code/idea1-sonnet-run2.jsx"
+  },
+  {
+    "label": "E",
+    "model": "openai/gpt-oss-120b",
+    "ideaId": 1,
+    "run": 1,
+    "file": "code/idea1-gptoss-run1.jsx"
+  },
+  {
+    "label": "F",
+    "model": "claude-sonnet-5",
+    "ideaId": 1,
+    "run": 1,
+    "file": "code/idea1-sonnet-run1.jsx"
+  },
+  {
+    "label": "G",
+    "model": "openai/gpt-oss-120b",
+    "ideaId": 2,
+    "run": 2,
+    "file": "code/idea2-gptoss-run2.jsx"
+  },
+  {
+    "label": "H",
+    "model": "claude-sonnet-5",
+    "ideaId": 2,
+    "run": 2,
+    "file": "code/idea2-sonnet-run2.jsx"
+  },
+  {
+    "label": "I",
+    "model": "deepseek-flash:no-thinking",
+    "ideaId": 2,
+    "run": 2,
+    "file": "code/idea2-deepseek-nothink-run2.jsx"
+  },
+  {
+    "label": "J",
+    "model": "openai/gpt-oss-120b",
+    "ideaId": 2,
+    "run": 1,
+    "file": "code/idea2-gptoss-run1.jsx"
+  },
+  {
+    "label": "K",
+    "model": "claude-sonnet-5",
+    "ideaId": 2,
+    "run": 1,
+    "file": "code/idea2-sonnet-run1.jsx"
+  },
+  {
+    "label": "L",
+    "model": "deepseek-flash:no-thinking",
+    "ideaId": 2,
+    "run": 1,
+    "file": "code/idea2-deepseek-nothink-run1.jsx"
+  },
+  {
+    "label": "M",
+    "model": "openai/gpt-oss-120b",
+    "ideaId": 3,
+    "run": 2,
+    "file": "code/idea3-gptoss-run2.jsx"
+  },
+  {
+    "label": "N",
+    "model": "deepseek-flash:no-thinking",
+    "ideaId": 3,
+    "run": 2,
+    "file": "code/idea3-deepseek-nothink-run2.jsx"
+  },
+  {
+    "label": "O",
+    "model": "claude-sonnet-5",
+    "ideaId": 3,
+    "run": 1,
+    "file": "code/idea3-sonnet-run1.jsx"
+  },
+  {
+    "label": "P",
+    "model": "deepseek-flash:no-thinking",
+    "ideaId": 3,
+    "run": 1,
+    "file": "code/idea3-deepseek-nothink-run1.jsx"
+  },
+  {
+    "label": "Q",
+    "model": "openai/gpt-oss-120b",
+    "ideaId": 3,
+    "run": 1,
+    "file": "code/idea3-gptoss-run1.jsx"
+  },
+  {
+    "label": "R",
+    "model": "claude-sonnet-5",
+    "ideaId": 3,
+    "run": 2,
+    "file": "code/idea3-sonnet-run2.jsx"
+  },
+  {
+    "label": "S",
+    "model": "openai/gpt-oss-120b",
+    "ideaId": 4,
+    "run": 1,
+    "file": "code/idea4-gptoss-run1.jsx"
+  },
+  {
+    "label": "T",
+    "model": "deepseek-flash:no-thinking",
+    "ideaId": 4,
+    "run": 2,
+    "file": "code/idea4-deepseek-nothink-run2.jsx"
+  },
+  {
+    "label": "U",
+    "model": "openai/gpt-oss-120b",
+    "ideaId": 4,
+    "run": 2,
+    "file": "code/idea4-gptoss-run2.jsx"
+  },
+  {
+    "label": "V",
+    "model": "claude-sonnet-5",
+    "ideaId": 4,
+    "run": 2,
+    "file": "code/idea4-sonnet-run2.jsx"
+  },
+  {
+    "label": "W",
+    "model": "deepseek-flash:no-thinking",
+    "ideaId": 4,
+    "run": 1,
+    "file": "code/idea4-deepseek-nothink-run1.jsx"
+  },
+  {
+    "label": "X",
+    "model": "claude-sonnet-5",
+    "ideaId": 4,
+    "run": 1,
+    "file": "code/idea4-sonnet-run1.jsx"
+  },
+  {
+    "label": "Y",
+    "model": "claude-sonnet-5",
+    "ideaId": 5,
+    "run": 1,
+    "file": "code/idea5-sonnet-run1.jsx"
+  },
+  {
+    "label": "Z",
+    "model": "openai/gpt-oss-120b",
+    "ideaId": 5,
+    "run": 1,
+    "file": "code/idea5-gptoss-run1.jsx"
+  },
+  {
+    "label": "AA",
+    "model": "claude-sonnet-5",
+    "ideaId": 5,
+    "run": 2,
+    "file": "code/idea5-sonnet-run2.jsx"
+  },
+  {
+    "label": "AB",
+    "model": "openai/gpt-oss-120b",
+    "ideaId": 5,
+    "run": 2,
+    "file": "code/idea5-gptoss-run2.jsx"
+  },
+  {
+    "label": "AC",
+    "model": "deepseek-flash:no-thinking",
+    "ideaId": 5,
+    "run": 2,
+    "file": "code/idea5-deepseek-nothink-run2.jsx"
+  },
+  {
+    "label": "AD",
+    "model": "deepseek-flash:no-thinking",
+    "ideaId": 5,
+    "run": 1,
+    "file": "code/idea5-deepseek-nothink-run1.jsx"
+  }
+]

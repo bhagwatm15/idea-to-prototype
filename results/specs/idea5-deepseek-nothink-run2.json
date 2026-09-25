@@ -1,0 +1,39 @@
+{
+  "productName": "TripSplit",
+  "oneLiner": "Split shared trip expenses with friends in seconds—no spreadsheet required.",
+  "problem": "Groups on trips struggle to track who paid for what and who owes whom; spreadsheets are error-prone, tedious, and awkward to share on the go.",
+  "targetUser": "Friend groups, couples, and colleagues aged 18–40 planning weekend getaways, road trips, or group vacations who want a fair, fast way to settle shared costs.",
+  "tone": "friendly, casual, trustworthy",
+  "platform": "Web",
+  "coreFlow": [
+    "Create a trip and invite friends via link or email",
+    "Add expenses as they happen (who paid, amount, who it's for)",
+    "View a live summary of balances and who owes whom",
+    "Settle up with one tap and mark payments as done"
+  ],
+  "screens": [
+    {
+      "name": "Trip Dashboard",
+      "purpose": "Overview of the trip, recent expenses, and current balance summary"
+    },
+    {
+      "name": "Add Expense",
+      "purpose": "Quickly log a new shared cost with payer, amount, and participants"
+    },
+    {
+      "name": "Balances",
+      "purpose": "Show net amounts owed between each pair of travelers"
+    },
+    {
+      "name": "Settle Up",
+      "purpose": "Record repayments and finalize the trip"
+    }
+  ],
+  "outOfScope": [
+    "Integration with bank accounts or payment processors",
+    "Receipt scanning or OCR",
+    "Multi-currency conversion",
+    "Recurring expenses or budgets",
+    "Native mobile apps"
+  ]
+}

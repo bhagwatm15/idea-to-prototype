@@ -1,0 +1,44 @@
+{
+  "productName": "Clarity",
+  "oneLiner": "Turn rough status bullets into polished updates—one for execs, one for the team.",
+  "problem": "Writing status updates is slow and repetitive. People either overshare with leadership or undershare with their team, wasting time reformatting the same information for different audiences.",
+  "targetUser": "Busy individual contributors, tech leads, and project managers who send regular status updates to both leadership and their teams.",
+  "tone": "clean, calm, professional",
+  "platform": "web",
+  "coreFlow": [
+    "Paste or type rough status bullets",
+    "Choose audience versions to generate (Exec, Team, or both)",
+    "Review AI-generated drafts side-by-side",
+    "Edit inline with tone presets (Concise, Detailed, Casual)",
+    "Copy, export, or share the final update"
+  ],
+  "screens": [
+    {
+      "name": "Input",
+      "purpose": "Capture rough notes via paste, type, or quick bullet entry with audience selection."
+    },
+    {
+      "name": "Dual Draft View",
+      "purpose": "Show side-by-side exec and team versions with inline editing and tone controls."
+    },
+    {
+      "name": "History",
+      "purpose": "Browse, search, and reuse past updates, with audience-tagged versions."
+    },
+    {
+      "name": "Templates & Preferences",
+      "purpose": "Save reusable formats, default tones, and recurring update structures."
+    },
+    {
+      "name": "Share & Export",
+      "purpose": "Send via email, Slack, or copy to clipboard with per-audience formatting."
+    }
+  ],
+  "outOfScope": [
+    "Real-time collaborative editing",
+    "Native mobile apps",
+    "Automatic task or ticket tracking integrations",
+    "Calendar scheduling of recurring sends",
+    "Analytics on update engagement"
+  ]
+}

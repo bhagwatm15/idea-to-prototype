@@ -1,0 +1,46 @@
+{
+  "productName": "Decided",
+  "oneLiner": "A decision log that captures what you decided, why, and when — so you never re-litigate the same question twice.",
+  "problem": "Teams and individuals make dozens of consequential decisions every week, then lose the reasoning behind them. Without a record, context evaporates, decisions get relitigated, new teammates re-ask settled questions, and no one can trace why a past choice was made.",
+  "targetUser": "Product managers, engineering leads, founders, and consultants who operate in fast-moving, meeting-heavy environments and need an auditable trail of team and personal decisions.",
+  "tone": "calm, precise, trustworthy",
+  "platform": "web",
+  "coreFlow": [
+    "Open Decided and land on a chronological feed of recent decisions, searchable and filterable by tag, project, or status.",
+    "Click 'Log a decision' and fill a short structured form: the decision statement, the options considered, the rationale, the decider(s), and the date.",
+    "Tag the entry to a project or topic and attach links to supporting docs, threads, or tickets.",
+    "Save the entry, which appears instantly in the feed and is versioned so later edits are tracked as addenda, not silent rewrites.",
+    "Return weeks later, search by keyword or browse by project, and copy a shareable permalink to settle 'wait, why did we do this?' in seconds."
+  ],
+  "screens": [
+    {
+      "name": "Decision Feed",
+      "purpose": "Chronological, filterable list of all logged decisions with quick previews and search."
+    },
+    {
+      "name": "New Decision",
+      "purpose": "Structured form to capture what was decided, the options, the rationale, who decided, and when."
+    },
+    {
+      "name": "Decision Detail",
+      "purpose": "Full read-only view of a single decision with tags, attachments, permalink, and addendum history."
+    },
+    {
+      "name": "Projects / Topics",
+      "purpose": "Group decisions by project or theme and browse the decision history within each."
+    },
+    {
+      "name": "Search & Filters",
+      "purpose": "Find decisions by keyword, person, date range, tag, or status."
+    }
+  ],
+  "outOfScope": [
+    "Real-time collaborative editing and multi-cursor editing",
+    "Integrations with Slack, Jira, or Notion in v1",
+    "Automated meeting transcription or AI-generated decision extraction",
+    "Approval workflows, voting, or formal sign-off chains",
+    "Mobile native apps (web-first, responsive only)",
+    "Analytics dashboards, ROI metrics, or decision-quality scoring",
+    "Public sharing or external guest access beyond unlisted permalinks"
+  ]
+}

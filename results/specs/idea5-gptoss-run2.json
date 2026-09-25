@@ -1,0 +1,44 @@
+{
+  "productName": "TripSplit",
+  "oneLiner": "Effortlessly split trip costs with friends, no spreadsheet needed.",
+  "problem": "Group trips generate many shared expenses, and reconciling who owes what requires manual calculations or cumbersome spreadsheets, leading to errors and friction.",
+  "targetUser": "Friends, families, and small travel groups who want a quick, transparent way to settle expenses after a shared trip.",
+  "tone": "friendly, clear, modern",
+  "platform": "web",
+  "coreFlow": [
+    "Create a new trip",
+    "Invite participants",
+    "Add expenses",
+    "Auto-calculate individual shares",
+    "Review settlement summary and finalize payments"
+  ],
+  "screens": [
+    {
+      "name": "Trip Dashboard",
+      "purpose": "Provides an overview of the trip, total spent, and status of settlements."
+    },
+    {
+      "name": "Invite & Participants",
+      "purpose": "Allows the organizer to add friends via email or shareable link and set contribution preferences."
+    },
+    {
+      "name": "Expense Entry",
+      "purpose": "Form to log each expense, attach receipts, assign payer, and choose split method (equal, percentage, custom)."
+    },
+    {
+      "name": "Settlement Summary",
+      "purpose": "Displays each participant's balance, suggested transfers, and options to export or copy payment links."
+    },
+    {
+      "name": "Settings & Export",
+      "purpose": "Adjust currency, rounding rules, download CSV reports, and configure optional integrations."
+    }
+  ],
+  "outOfScope": [
+    "Mobile native applications",
+    "Real-time payment processing integration",
+    "Multi‑currency conversion",
+    "AI-powered receipt OCR",
+    "Enterprise-level corporate expense reporting"
+  ]
+}
