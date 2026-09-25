@@ -1,0 +1,21 @@
+label,idea_id,screens_specific,out_of_scope_sensible,approve_without_major_edits,notes
+A,1,Yes,Yes,Yes,
+B,1,Yes,Yes,Yes,This is much more in-depth and better spec than A.
+C,1,Yes,Yes,Yes,same as B
+D,1,Yes,Yes,Yes,"much more in detail than other three. Connection to other apps is a nice addition, saves time and effort switching between apps."
+E,2,Yes,Yes,Yes,
+F,2,Partly,Yes,No,Export or download option should be available. The updates linked to the respective projects gives more clarity but that is missing. User has option to include it in the input text.
+G,2,Yes,Yes,Yes,
+H,2,Yes,Yes,Yes,best of all 4.
+I,3,Yes,Yes,No,Don't fully understand Dashboard and Decision List. Dashboard as specified is prob not needed here.
+J,3,Yes,Yes,Yes,better functionality like adding status updates 
+K,3,Yes,Yes,No,"on Decision Detail, no place to add updates how are the updates coming in? Allow edit somewhere to put in updates."
+L,3,Yes,Yes,Yes,
+M,4,Yes,Yes,No,Adding items is too cumbersome with just typing.
+N,4,Yes,Yes,Yes,
+O,4,Partly,Yes,No,much more advanced functionalities but may not be necessarily needed.
+P,4,Yes,Yes,No,just typing maybe cumbersome when adding items.
+Q,5,Yes,Yes,Yes,
+R,5,Yes,Yes,No,not a great dashboard. very little information
+S,5,Yes,Yes,Yes,
+T,5,Yes,Yes,Yes,Don't need contact info.
