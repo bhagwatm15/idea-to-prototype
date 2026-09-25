@@ -754,16 +754,26 @@ interface ReviewPage {
   /** Browser storage key for the reviewer's answers; distinct per page so labels don't collide. */
   storage: string;
   title: string;
+  /** File name the page's export button downloads; distinct per page. */
+  exportName: string;
 }
 
 const PROTOTYPE_PAGES: ReviewPage[] = [
-  { html: "review.html", key: "review-key.json", models: CONFIG.original, storage: "blind-review-scores", title: "Blind review" },
+  {
+    html: "review.html",
+    key: "review-key.json",
+    models: CONFIG.original,
+    storage: "blind-review-scores",
+    title: "Blind review",
+    exportName: "review-scores.csv",
+  },
   {
     html: "review-3way.html",
     key: "review-3way-key.json",
     models: CONFIG.comparison,
     storage: "blind-review-scores-3way",
     title: "Blind review (3 models)",
+    exportName: "review-3way-scores.csv",
   },
 ];
 const SPEC_PAGES: ReviewPage[] = [
@@ -773,6 +783,7 @@ const SPEC_PAGES: ReviewPage[] = [
     models: CONFIG.original,
     storage: "blind-spec-review",
     title: "Blind spec review",
+    exportName: "spec-review-scores.csv",
   },
   {
     html: "spec-review-3way.html",
@@ -780,12 +791,14 @@ const SPEC_PAGES: ReviewPage[] = [
     models: CONFIG.comparison,
     storage: "blind-spec-review-3way",
     title: "Blind spec review (3 models)",
+    exportName: "spec-review-3way-scores.csv",
   },
 ];
 
 function fillTemplate(template: string, page: ReviewPage, data: string): string {
   return template
     .replace("__STORAGE__", () => page.storage)
+    .replace("__EXPORT__", () => page.exportName)
     .replace(/__TITLE__/g, () => page.title)
     .replace("__DATA__", () => data);
 }
@@ -887,7 +900,7 @@ function exportCsv(scores) {
   }));
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([rows.join("\\n") + "\\n"], { type: "text/csv" }));
-  a.download = "review-scores.csv";
+  a.download = "__EXPORT__";
   a.click();
 }
 
@@ -1143,7 +1156,7 @@ document.getElementById("export").addEventListener("click", () => {
     const a = answers[entry.label] || {};
     return [entry.label, entry.ideaId, a.screens, a.outOfScope, a.approve, a.notes].map(esc).join(",");
   }));
-  const link = el("a", { download: "spec-review-scores.csv", href: URL.createObjectURL(new Blob([rows.join("\\n") + "\\n"], { type: "text/csv" })) });
+  const link = el("a", { download: "__EXPORT__", href: URL.createObjectURL(new Blob([rows.join("\\n") + "\\n"], { type: "text/csv" })) });
   link.click();
 });
 
