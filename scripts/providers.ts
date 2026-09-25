@@ -10,7 +10,8 @@
  *   Thinking is on by default (effort high); reasoning streams in
  *   delta.reasoning_content. Usage rides on the last chunk: prompt_tokens,
  *   completion_tokens, prompt_cache_hit_tokens,
- *   completion_tokens_details.reasoning_tokens.
+ *   completion_tokens_details.reasoning_tokens. {"thinking": {"type": "disabled"}}
+ *   in the request turns thinking off.
  * - Groq: OpenAI-compatible POST https://api.groq.com/openai/v1/chat/completions
  *   with max_completion_tokens. gpt-oss reasons by default (effort medium);
  *   reasoning streams in delta.reasoning. Streaming usage is in the final
@@ -178,7 +179,8 @@ async function compatAttempt(
   model: string,
   prompt: string,
   maxTokens: number,
-  start: number
+  start: number,
+  extraParams: Record<string, unknown>
 ): Promise<AttemptResult> {
   const key = process.env[provider.keyEnv];
   let response: Response;
@@ -190,6 +192,7 @@ async function compatAttempt(
         model,
         messages: [{ role: "user", content: prompt }],
         [provider.maxTokensField]: maxTokens,
+        ...extraParams,
         stream: true,
       }),
       signal: AbortSignal.timeout(15 * 60 * 1000),
@@ -281,7 +284,9 @@ export async function callWithRetries(
   prompt: string,
   maxTokens: number,
   policy: RetryPolicy,
-  log: (message: string) => void
+  log: (message: string) => void,
+  /** Extra request fields for OpenAI-compatible providers, e.g. DeepSeek's thinking switch. */
+  extraParams: Record<string, unknown> = {}
 ): Promise<CallOutcome> {
   let errorRetries = 0;
   let rateLimitRetries = 0;
@@ -293,7 +298,7 @@ export async function callWithRetries(
       const result =
         provider === "anthropic"
           ? await anthropicAttempt(model, prompt, maxTokens, start)
-          : await compatAttempt(COMPAT_PROVIDERS[provider], model, prompt, maxTokens, start);
+          : await compatAttempt(COMPAT_PROVIDERS[provider], model, prompt, maxTokens, start, extraParams);
       return { ...result, startedAt, retries: errorRetries + rateLimitRetries, rateLimitWaitMs };
     } catch (error) {
       const e = error instanceof ProviderError ? error : new ProviderError(String(error), null, null);

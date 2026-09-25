@@ -42,16 +42,25 @@ interface Prices {
 }
 
 interface ModelConfig {
+  /** Identifies the setup in results; unique per model + settings. */
   id: string;
+  /** Model name sent to the API, when it differs from id. */
+  apiModel?: string;
+  /** Extra request fields (OpenAI-compatible providers only). */
+  requestParams?: Record<string, unknown>;
   provider: ProviderName;
   /** Short name used in file names and --models. The review pages never show it. */
   slug: string;
-  /** How the model reasons with the request the harness sends (no reasoning params are set). */
+  /** How the model reasons with the request the harness sends. */
   reasoningMode: string;
   pricePerMTok: Prices;
   /** DeepSeek only: off-peak prices. pricePerMTok is then the peak price. */
   offPeakPricePerMTok?: Prices;
 }
+
+/** deepseek-flash prices, shared by both DeepSeek setups. Fill in from api-docs.deepseek.com/quick_start/pricing. */
+const DEEPSEEK_FLASH_PEAK: Prices = { input: null, cachedInput: null, output: null };
+const DEEPSEEK_FLASH_OFF_PEAK: Prices = { input: null, cachedInput: null, output: null };
 
 // Anthropic IDs checked against platform.claude.com/docs/en/about-claude/models/overview on 2026-09-24.
 // DeepSeek and Groq IDs: see `--step list-models`.
@@ -71,13 +80,24 @@ const MODELS: ModelConfig[] = [
     pricePerMTok: { input: 1, cachedInput: null, output: 5 },
   },
   {
-    // Served by DeepSeek-V4.1-Flash. Fill in from api-docs.deepseek.com/quick_start/pricing.
+    // Served by DeepSeek-V4.1-Flash. Its default thinking used up the app's limits in the
+    // single-idea check (both steps truncated), so the comparison uses the setup below.
     id: "deepseek-flash",
     provider: "deepseek",
     slug: "deepseek",
     reasoningMode: "thinking (API default, effort high)",
-    pricePerMTok: { input: null, cachedInput: null, output: null },
-    offPeakPricePerMTok: { input: null, cachedInput: null, output: null },
+    pricePerMTok: DEEPSEEK_FLASH_PEAK,
+    offPeakPricePerMTok: DEEPSEEK_FLASH_OFF_PEAK,
+  },
+  {
+    id: "deepseek-flash:no-thinking",
+    apiModel: "deepseek-flash",
+    requestParams: { thinking: { type: "disabled" } },
+    provider: "deepseek",
+    slug: "deepseek-nothink",
+    reasoningMode: "none (thinking disabled)",
+    pricePerMTok: DEEPSEEK_FLASH_PEAK,
+    offPeakPricePerMTok: DEEPSEEK_FLASH_OFF_PEAK,
   },
   {
     // Fill in from groq.com/pricing.
@@ -106,7 +126,7 @@ const DEEPSEEK_PEAK = {
 const CONFIG = {
   models: MODELS,
   /** The three-way comparison: what `spec`/`code` run by default and what the -3way review pages show. */
-  comparison: ["claude-sonnet-5", "deepseek-flash", "openai/gpt-oss-120b"],
+  comparison: ["claude-sonnet-5", "deepseek-flash:no-thinking", "openai/gpt-oss-120b"],
   /**
    * The original two-way comparison; review.html and spec-review.html keep showing only these.
    * runs.csv and summary.csv cover only `comparison`, so Haiku's runs stay in runs.json but not the reports.
@@ -259,7 +279,15 @@ function modelConfig(id: string): ModelConfig {
 }
 
 function callModel(model: ModelConfig, prompt: string, maxTokens: number): Promise<CallOutcome> {
-  return callWithRetries(model.provider, model.id, prompt, maxTokens, CONFIG.retry, (message) => console.warn(message));
+  return callWithRetries(
+    model.provider,
+    model.apiModel ?? model.id,
+    prompt,
+    maxTokens,
+    CONFIG.retry,
+    (message) => console.warn(message),
+    model.requestParams
+  );
 }
 
 /** "peak" or "off-peak" for DeepSeek's time-based pricing; null for other providers. */
@@ -1210,7 +1238,9 @@ async function printModelLists() {
       console.log(`${provider}: skipped (${problem})\n`);
       continue;
     }
-    const configured = CONFIG.models.filter((m) => m.provider === provider).map((m) => m.id);
+    const configured = [
+      ...new Set(CONFIG.models.filter((m) => m.provider === provider).map((m) => m.apiModel ?? m.id)),
+    ];
     const list = await listModels(provider);
     console.log(`${provider}: ${list.length} models`);
     for (const m of list.sort((a, b) => String(a.id).localeCompare(String(b.id)))) {
