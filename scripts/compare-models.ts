@@ -106,7 +106,7 @@ const MODELS: ModelConfig[] = [
     provider: "groq",
     slug: "gptoss",
     reasoningMode: "reasoning (API default, effort medium)",
-    pricePerMTok: { input: 0.15, cachedInput: 0.75, output: 0.6 },
+    pricePerMTok: { input: 0.15, cachedInput: 0.075, output: 0.6 },
   },
 ];
 
