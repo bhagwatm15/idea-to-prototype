@@ -8,9 +8,15 @@ spec,openai/gpt-oss-120b,10,0,0,spec_valid,10,100%
 code,claude-sonnet-5,10,0,0,has_default_export,10,100%
 code,claude-sonnet-5,10,0,0,compiles,10,100%
 code,claude-sonnet-5,10,0,0,code_valid,10,100%
+code,claude-sonnet-5,10,0,0,code_valid_with_one_retry,10,100%
 code,deepseek-flash:no-thinking,10,0,0,has_default_export,10,100%
 code,deepseek-flash:no-thinking,10,0,0,compiles,10,100%
 code,deepseek-flash:no-thinking,10,0,0,code_valid,10,100%
+code,deepseek-flash:no-thinking,10,0,0,code_valid_with_one_retry,10,100%
 code,openai/gpt-oss-120b,10,0,0,has_default_export,10,100%
 code,openai/gpt-oss-120b,10,0,0,compiles,7,70%
 code,openai/gpt-oss-120b,10,0,0,code_valid,7,70%
+code,openai/gpt-oss-120b,10,0,0,code_valid_with_one_retry,10,100%
+code-retry,openai/gpt-oss-120b,3,0,0,has_default_export,3,100%
+code-retry,openai/gpt-oss-120b,3,0,0,compiles,3,100%
+code-retry,openai/gpt-oss-120b,3,0,0,code_valid,3,100%
