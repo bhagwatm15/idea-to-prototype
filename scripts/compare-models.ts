@@ -60,8 +60,8 @@ interface ModelConfig {
 }
 
 /** deepseek-flash prices, shared by both DeepSeek setups. Fill in from api-docs.deepseek.com/quick_start/pricing. */
-const DEEPSEEK_FLASH_PEAK: Prices = { input: null, cachedInput: null, output: null };
-const DEEPSEEK_FLASH_OFF_PEAK: Prices = { input: null, cachedInput: null, output: null };
+const DEEPSEEK_FLASH_PEAK: Prices = { input: 0.30, cachedInput: 0.006, output: 1.20 };
+const DEEPSEEK_FLASH_OFF_PEAK: Prices = { input: 0.15, cachedInput: 0.003, output: 0.60 };
 
 // Anthropic IDs checked against platform.claude.com/docs/en/about-claude/models/overview on 2026-09-24.
 // DeepSeek and Groq IDs: see `--step list-models`.
@@ -106,7 +106,7 @@ const MODELS: ModelConfig[] = [
     provider: "groq",
     slug: "gptoss",
     reasoningMode: "reasoning (API default, effort medium)",
-    pricePerMTok: { input: null, cachedInput: null, output: null },
+    pricePerMTok: { input: 0.15, cachedInput: 0.75, output: 0.6 },
   },
 ];
 

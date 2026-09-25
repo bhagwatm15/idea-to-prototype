@@ -1,0 +1,31 @@
+label,idea_id,score,notes
+A,1,3,Looks clean but need to pay attention to see which project I'm looking at while navigating the tabs. 
+B,1,2,Not super good on UX. Summary leads nowhere. Need to click on the tabs. No coherent workflow.
+C,1,4,coherent workflow. Easy to navigate. Look and feel is same as others but with more clarity.
+D,1,3,"clean look, coherent workflow, Tabs are awkwardly placed to takes effort to reach the top right than being available on top of the project text at the center."
+E,1,2,"Bulky design, blocks look very rigid. Workflow seems fragmented, no tab leads anywhere. User need to figure out. Scattered."
+F,1,1,doesn't load
+G,2,3,navigation is simple. Blocky UI but easy flow. Copy buttons throw error and prototype vanishes.
+H,2,4,no option to send to history? How does history gets populated? integ with slack and email is nice addition. Softer UI.
+I,2,4,softer look. Easy navigation. Very similar to previous one. 
+J,2,4,very straightforward. easy navigation. Only PT till now to show text that is ready to export. Looks clunky. 
+K,2,4,Better look and feel. More professional. Doesn't show what is exported like the previous 3 except J. Also has a save history like one of the prev one. Loved this one best so far.
+L,2,4,"This has better UI than all the other. One prob still, no way to send to history but you can see history page. I would just add this one more feature and send to stakeholder. Best of all for this idea."
+M,3,1,failed to generate
+N,3,3,finding New decision is a hassle. Other pages are okay. UX could be better. Look is calm and professional.
+O,3,3,same issue as earlier. hard to locate new decision. UX could be better. UI is a bit strange mainly due to the font.
+P,3,3,"Better UX. Open decision to show that user need to click, absent in prev ones. Back to feed navigation is still better. Same issue. New decision is hard to locate."
+Q,3,3,Better navigation. UX is bit old fashioned. New decision on the top is hard to locate.
+R,3,2,very gloomy look. Navigation is okay but no place to write the update. missing back to feed links. prev one was better.
+S,4,2,very spaced out. No good use of space. Hard to navigate except going back from recipe to plan. 
+T,4,2,why are we scanning barcode or receipt this is an app for what is at home? Confusing. lok and feel much better than prev. Navigation not that great.
+U,4,2,Navigation is not that great. again very spaced out UI. Not sure where to go.
+V,4,3,better look and feel. better navigation. Bottom tabs are not very user friendly. 
+W,4,4,first PT to have navigation from main page to plan. Very intuitive and better look. bottom tabs still bother but very functional. 
+X,4,2,"Navigation is not good. Tabs on far right, hard to figure out what to click. No 'back to feed' links. UX bad. UI is good "
+Y,5,4,New trip on main page and also on far right. redundant. Look and feel is good. bottom tabs are not the best. Easy to navigate and flow makes sense.
+Z,5,1,no output
+AA,5,3,Expense in detail page has no link to open expense. Redundant new trip. Navigation is broken.
+AB,5,1,no output. Screen blinks. same with other screens with no output.
+AC,5,2,bottom tabs too spaced out. broken navigation. nothing happens after creating trip from home page. No way to go to settle except clicking on tab. Settle doesn't allow switching trips to show settlement. 
+AD,5,3,"how do you add participant, after creating trip doesn't show up in the trips. no flow to lead to settle. UI is good but navigation needs work."

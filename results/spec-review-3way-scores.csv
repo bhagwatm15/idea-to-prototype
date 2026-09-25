@@ -1,0 +1,31 @@
+label,idea_id,screens_specific,out_of_scope_sensible,approve_without_major_edits,notes
+A,1,Yes,Yes,Yes,
+B,1,Yes,Yes,Yes,
+C,1,Yes,Yes,Yes,most interesting is integrations to other tools. Handoff is something new.
+D,1,Yes,Partly,No,integration to messaging tools could be good to send off block/unblock notif. Suggested next action is a nice touch missing in other specs.
+E,1,Yes,Yes,No,navigation from overview to decision details seems to be missing. Functionality to reply to who's waiting is a good thing which is absent.
+F,1,Yes,Yes,No,same issues as prev spec. Coherency is missing.
+G,2,Yes,Yes,Yes,
+H,2,Yes,Yes,Yes,would approve only if dual editor has options to export because there's no clear mention of where it'll happen.
+I,2,Yes,Yes,Yes,
+J,2,Yes,Yes,Yes,file upload is a nice touch. liked this one best so far.
+K,2,Yes,Yes,Yes,Templates is a nice addition. Debatable if it's a necessary req. Don't see where export of send to slack should be on the screens. 
+L,2,Yes,Yes,Yes,Easy to navigate. Simple flow. 
+M,3,Yes,Yes,No,ability to add updates to a decision is missing. decision feed has no way to create a new decision.
+N,3,Yes,Yes,Yes,very dull. could be confusiing as a prototype. 
+O,3,Yes,Yes,Yes,Good functionality
+P,3,Yes,Yes,Yes,good quick access to create a new decision on main page. like the navigation
+Q,3,Yes,Yes,Yes,not as good as prev one.
+R,3,Yes,Yes,Yes,much better UI with decisiosn grouped by project. easy to relate.
+S,4,Yes,Yes,Yes,
+T,4,Yes,Yes,Yes,better UX
+U,4,Yes,Yes,Yes,a bit confusing. but call to action is totally on point. 
+V,4,Yes,Yes,Yes,
+W,4,,,,detailed dashboard is good. exporting grocery list is a nice addition. Good flow.
+X,4,Yes,Yes,Yes,nothing major to adjust. 
+Y,5,Yes,Yes,Yes,"inviting via link is a good addition, more convinient"
+Z,5,Yes,Yes,No,"invite link is great. exporting report is weird, may not be used often and seems unnecessary"
+AA,5,Yes,Yes,Yes,adding trip at dashboard is good. 
+AB,5,Yes,Yes,No,new trip is too far. 
+AC,5,Partly,Yes,No,where are we adding new trip in the pages?
+AD,5,Yes,Yes,No,"where do we create new trip in the oages? better functionality here like adjusting currency, useful for international trips, and attaching receipts but what does it do? reads the recipts?"
